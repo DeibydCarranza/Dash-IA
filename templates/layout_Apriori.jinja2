@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.css" />
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='dist/css/styles.css') }}" />
+    <link rel="stylesheet" href="https://cdn.plot.ly/plotly-2.4.2.min.js">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+
+
+    <title>{{ title }}</title>
+      <link rel="shortcut icon" href="{{ url_for('static', filename='dist/img/favicon.png') }}" type="image/x-icon" />
+</head>
+
+<body class="dash-template">   
+    <header class="header-top">
+        <div class="nav-wrapper">
+            <a href="/">
+                <h1>Inicio</h1>
+            </a>
+        </div>
+    </header>         
+    {% include 'navbar.jinja2' %}
+
+    <div class="content-container">
+        <div>
+            <h1>Apriori</h1>
+            <p>Descripción</p>
+        </div>
+        <div class="box-upload">
+            <form id="csv-form" action="{{ url_for('upload_csv') }}" method="POST" enctype="multipart/form-data">
+                <input type="file" name="csv_file" accept=".csv" style="display: none;" onchange="submitForm()">
+                <div class="upload-container">
+                    Carga de archivo <a>Select CSV File</a>
+                </div>
+                <div id="output-data-upload"></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="container">
+        <button id="myButton">Mostrar</button>
+    </div>
+
+    <div id="render-container" class="content-container">
+        <p style="text-align:center">Mostrando el 20% de los resultados</p>
+        <div class="table-container">
+            <table id="myTable" class="display">
+                <thead>
+                    <tr>
+                        {% for key in data[0].keys() %}
+                            {% if loop.index > 1 %}  <!-- Omitir el primer título -->
+                                <th>{{ key }}</th>
+                            {% endif %}
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set num_items =(data| length * 0.2) |int %}
+                    {% for item in data[:num_items] %}  <!-- Mostrar solo los primeros 20% -->
+                        <tr>
+                            {% for column in item.keys() %}
+                                {% if loop.index > 1 %} 
+                                    <td>{{ item[column] }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if pagination %}
+            <div class="pagination">
+                {{ pagination.info }}
+                {{ pagination.links }}
+            </div>
+        {% endif %}
+
+        <div id="graph-transac" style="width:100%"></div>
+
+
+
+    <div class="container-slider-input">
+        <div class="button-params">
+            <div class="submit-button">
+                <a class="boton-send" id="submitButton">Calcular</a>
+                <div class="button-effect"></div>
+            </div>
+        </div>
+
+        <div class="param-1">
+            <div class="area-param-1">
+            <input class="inputRange" type="range" min="0" max="100" value="1" step="1" />
+            <input class="inputNumber" id="inputNumber-1" type="number" min="0" max="100" value="1" step="1"/>
+            </div>
+            <div class="type-param-1">
+            <p>Soporte</p>
+            </div>
+        </div>
+        <div class="param-2">
+            <div class="area-param-2">
+            <input class="inputRange" type="range" min="0" max="100" value="10" step="1" />
+            <input class="inputNumber" id="inputNumber-2" type="number" min="0" max="100" value="10" step="1"/>
+            </div>
+            <div class="type-param2">
+            <p>Confianza</p>
+            </div>
+        </div>
+        <div class="param-3">
+            <div class="area-param-3">
+            <input class="inputRange" type="range" min="0" max="6" value="10" step="0.1" />
+            <input class="inputNumber" id="inputNumber-3" type="number" min="0" max="6" value="10" step="0.1"/>
+            </div>
+            <div class="type-param-3">
+            <p>Elevación</p>
+            </div>
+        </div>
+        <div class="imagen-params">
+            <img src="./../static/img/params.png" style="max-width: 100%; max-height: 100%;">
+        </div>
+        </div>
+
+        <table id="tablaResultados">
+            <thead>
+                <tr>
+                    <th>Regla</th>
+                    <th>Antecedente</th>
+                    <th>Consecuente</th>
+                    <th>Soporte</th>
+                    <th>Confianza</th>
+                    <th>Elevación</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in res_data %}
+                <tr>
+                    <td>{{ item['Regla'] }}</td>
+                    <td>{{ item['Antecedente'] }}</td>
+                    <td>{{ item['Consecuente'] }}</td>
+                    <td>{{ item['Soporte'] }}</td>
+                    <td>{{ item['Confianza'] }}</td>
+                    <td>{{ item['Elevación'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    
+    </div>
+
+    
+
+
+
+    <footer>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.0/js/jquery.dataTables.js"></script>
+
+        <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>  
+        <script type="text/javascript" src="../../static/js/barra.js"></script>
+        <script type="text/javascript" src="../../static/js/upload.js"></script>
+        <script type="text/javascript" src="../../static/js/components.js"></script>
+        
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var graphJson = {{ graph_json | safe }};
+                Plotly.plot('graph-transac', graphJson.data, graphJson.layout);
+            });
+        </script>
+
+        <script>
+            $(document).ready(function() {
+                $('#myTable').DataTable({
+                scrollY: 400,
+                scrollX: true,
+                });
+            });
+        </script>
+    </footer>
+</body>
+</html>

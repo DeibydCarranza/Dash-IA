@@ -1,0 +1,64 @@
+.container-slider-input {  display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      ". . . . param-1 param-1 param-1"
+      ". imagen-params imagen-params . param-2 param-2 param-2"
+      ". . . . param-3 param-3 param-3"
+      ". . . . . button-params .";
+  }
+  
+  .button-params { grid-area: button-params; }
+  
+  .param-1 {  display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      ". type-param-1 ."
+      "area-param-1 area-param-1 area-param-1"
+      "area-param-1 area-param-1 area-param-1";
+    grid-area: param-1;
+  }
+  
+  .area-param-1 { grid-area: area-param-1; }
+  
+  .type-param-1 { grid-area: type-param-1; }
+  
+  .param-2 {  display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      ". type-param2 ."
+      "area-param-2 area-param-2 area-param-2"
+      "area-param-2 area-param-2 area-param-2";
+    grid-area: param-2;
+  }
+  
+  .area-param-2 { grid-area: area-param-2; }
+  
+  .type-param2 { grid-area: type-param2; }
+  
+  .param-3 {  display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      ". type-param-3 ."
+      "area-param-3 area-param-3 area-param-3"
+      "area-param-3 area-param-3 area-param-3";
+    grid-area: param-3;
+  }
+  
+  .area-param-3 { grid-area: area-param-3; }
+  
+  .type-param-3 { grid-area: type-param-3; }
+  
+  .imagen-params { grid-area: imagen-params; }
+  

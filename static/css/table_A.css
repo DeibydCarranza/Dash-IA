@@ -1,0 +1,14 @@
+/* Estilos de la tabla */
+table.dataTable {
+    width: 100%;
+    margin: 0 auto;
+    clear: both;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+.table-container {
+    overflow-y: auto;
+}
+.page-button {
+    margin-right: 10px;
+}

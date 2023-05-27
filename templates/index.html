@@ -1,0 +1,123 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block body %}
+<body class="is-preload">
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+            <!-- Header -->
+                <header id="header">
+                    <div class="inner">
+                        <!-- Logo -->
+                            <a href="/" class="logo">
+                                <span class="symbol">
+                                    <img src="{% static 'img/logo.png' %}" alt=""/>
+                                </span>
+                                <span class="title">
+                                    DashIA
+                                </span>
+                            </a>
+                    </div>
+                </header>
+            <!-- Main -->
+                <div id="main">
+                    <div class="inner">
+                        <header>
+                            <h1>Plataforma de uso libre para la análisis de datos y explotación de la información.</h1>
+                        </header>
+                        <section class="tiles">
+                            <article class="style1">
+                                <span class="image">
+                                    <img src="{% static 'img/pic01.jpg' %}" alt="" />
+                                </span>
+                                <a href="/apriori/">
+                                    <h2>APRIORI</h2>
+                                    <div class="content">
+                                        <p>aprendizaje automático de asociación utilizado para descubrir patrones frecuentes en conjuntos de datos grandes</p>
+                                    </div>
+                                </a>
+                            </article>
+                            <article class="style2">
+                                <span class="image">
+                                    <img src="{% static 'img/pic02.jpg' %}" alt="" />
+                                </span>
+                                <a href="/clustering/">
+                                    <h2>CLUSTER</h2>
+                                    <div class="content">
+                                        <p>Técnicas de aprendizaje no supervisado utilizadas para dividir un conjunto de datos en grupos o clústeres con características similares</p>
+                                    </div>
+                                </a>
+                            </article>
+                            <article class="style3">
+                                <span class="image">
+                                    <img src="{% static 'img/pic03.jpg' %}" alt="" />
+                                </span>
+                                <a href="/metricas/">
+                                    <h2>METRICAS</h2>
+                                    <div class="content">
+                                        <p>aprendizaje automático para medir la similitud o la distancia entre dos o más objetos o puntos de datos en un espacio n-dimensional.</p>
+                                    </div>
+                                </a>
+                            </article>
+                            <article class="style4">
+                                <span class="image">
+                                    <img src="{% static 'img/pic04.jpg' %}" alt="" />
+                                </span>
+                                <a href="/chart1">
+                                    <h2>OTRO</h2>
+                                    <div class="content">
+                                        <p>Sed nisl arcu euismod sit amet nisi lorem etiam dolor veroeros et feugiat.</p>
+                                    </div>
+                                </a>
+                            </article>
+                            <article class="style5">
+                                <span class="image">
+                                    <img src="{% static 'img/pic05.jpg' %}" alt="" />
+                                </span>
+                                <a href="generic.html">
+                                    <h2>OTRO</h2>
+                                    <div class="content">
+                                        <p>Sed nisl arcu euismod sit amet nisi lorem etiam dolor veroeros et feugiat.</p>
+                                    </div>
+                                </a>
+                            </article>
+                            <article class="style6">
+                                <span class="image">
+                                    <img src="{% static 'img/pic06.jpg' %}" alt="" />
+                                </span>
+                                <a href="generic.html">
+                                    <h2>OTRO</h2>
+                                    <div class="content">
+                                        <p>Sed nisl arcu euismod sit amet nisi lorem etiam dolor veroeros et feugiat.</p>
+                                    </div>
+                                </a>
+                            </article>
+                        </section>
+                    </div>
+                </div>
+
+            <!-- Footer -->
+                <footer id="footer">
+                    <div class="inner">
+                        <section>
+                            <h2>Follow</h2>
+                            <ul class="icons">
+                                <li><a href="#" class="icon brands style2 fa-github"><span class="label">GitHub</span></a></li>
+                                <li><a href="#" class="icon solid style2 fa-phone"><span class="label">Phone</span></a></li>
+                                <li><a href="#" class="icon solid style2 fa-envelope"><span class="label">Email</span></a></li>
+                            </ul>
+                        </section>
+                        <ul class="copyright">
+                            <p>by Carranza Ochoa and Ramirez Garcia</p>
+                        </ul>
+                    </div>
+                </footer>
+
+        </div>
+
+    <!-- Scripts -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script type="text/javascript" src="{% static 'js/main.js' %}"></script>
+        
+{% endblock %}
