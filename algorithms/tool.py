@@ -4,25 +4,22 @@ import base64
 import pandas as pd
 import os
 
-global path_file
-path_file = os.path.join(os.path.dirname(__file__), '../',  'data', 'file.csv')
+
 
 """ Save data on file, generete dataframe and return dash_tabe """
-def parse_contents(contents, filename):
+def parse_contents(contents, filename,path_file):
     _, content_string = contents.split(',')
     decoded = base64.b64decode(content_string)
-    global path_file
-    print(path_file+"dddddddddddddddddddddddd")
     try:
         if 'csv' in filename:
             # writin on file
-            write_on_file(decoded)        
+            write_on_file(decoded,path_file)        
             print(path_file)
             # generating dataframe
-            print("--------------------")
             df = pd.read_csv(path_file, header=None) ##Considerar si lleva o no encabezado
             # Generate html component
             render = render_results(df)
+            return render
     except Exception as e:
         print(e)
         return html.Div([
@@ -42,7 +39,7 @@ def create_data_table(df):
         page_size=10,
         style_table={'overflowX': 'scroll','overflowY': 'scroll'}
     )
-    return 
+    return table
 
 """ Generate table """
 def render_results(df):
@@ -62,7 +59,6 @@ def render_results(df):
     return res
 
 """Create Pandas DataFrame from local CSV."""
-def write_on_file(decoded):
-    global path_file
+def write_on_file(decoded,path_file):
     with open(path_file, 'w') as f:
             f.write(decoded.decode("utf-8"))
