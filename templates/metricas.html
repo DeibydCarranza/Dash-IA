@@ -1,4 +1,5 @@
 {% load static %}
+{% load plotly_dash %}
 <!DOCTYPE html>
 <html>
     <head>       
@@ -11,6 +12,7 @@
         <link rel="stylesheet" href="{% static 'css/base.css' %}" />
         <link rel="stylesheet" href="{% static 'css/containers.css' %}" />
         <link rel="stylesheet" href="{% static 'css/header.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/main.css' %}" />
     </head>
 
     <body class="dash-template">   
@@ -28,10 +30,14 @@
                 <h1>Métricas</h1>
                 <p>Agregar introducción y cosas random</p>
             </div>
-            
+            <div class="{% plotly_class name='section_metricas' %} card" style="height: 100%; width: 100%">
+                {% plotly_app name='section_metricas' ratio=0.5 %}
+            </div>
         </div>
         <footer>
+            <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
             <script type="text/javascript" src="../../../static/js/barra.js"></script>
         </footer>
     </body>
 </html>
+

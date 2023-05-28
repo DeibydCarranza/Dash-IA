@@ -1,7 +1,9 @@
 from django.urls import path, include
-from . import views
-from .views import IndexPageView
+from .views import metrics_algorithm
+
+#Importar Dashboards
+from . import (dash_app)
 
 urlpatterns = [
-    path('', IndexPageView.as_view(), name='index'),
+    path('', metrics_algorithm, name="apriori"),
 ]

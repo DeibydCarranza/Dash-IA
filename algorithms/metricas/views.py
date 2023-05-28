@@ -3,5 +3,5 @@ from django.http import HttpResponse
 from django.views.generic import TemplateView
 
 # Create your views here.
-class IndexPageView(TemplateView):
-    template_name = 'metricas.html'
+def metrics_algorithm(request):
+    return render(request, 'metricas.html')

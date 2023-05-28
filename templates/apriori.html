@@ -30,10 +30,12 @@
                 <h1>Reglas de asociación</h1>
                 <p>Agregar introducción y cosas random</p>
             </div>
-
-            {% plotly_app name="section_apriori" %}
+            <div class="{% plotly_class name='section_apriori' %} card" style="height: 100%; width: 100%">
+                {% plotly_app name='section_apriori' ratio=0.5 %}
+            </div>
         </div>
         <footer>
+            <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
             <script type="text/javascript" src="../../../static/js/barra.js"></script>
         </footer>
     </body>
