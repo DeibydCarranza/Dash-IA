@@ -21,6 +21,6 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='index.html'), name='index'),
-    path('apriori/',include('apriori.urls')),
-    path('metricas/',include('metricas.urls'))
+    path('apriori/',include('algorithms.apriori.urls')),
+    path('metricas/',include('algorithms.metricas.urls'))
 ]
