@@ -21,6 +21,11 @@ from django.views.generic import TemplateView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='index.html'), name='index'),
+
+    #Dash App
+    path('django_plotly_dash/', include('django_plotly_dash.urls')),
+
     path('apriori/',include('algorithms.apriori.urls')),
-    path('metricas/',include('algorithms.metricas.urls'))
+    path('metricas/',include('algorithms.metricas.urls')),
 ]
+

@@ -38,6 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Dash App
+    'django_plotly_dash.apps.DjangoPlotlyDashConfig',
+    'dpd_static_support',
+
+    # My apps
+
 ]
 
 MIDDLEWARE = [
@@ -48,6 +55,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'django_plotly_dash.middleware.BaseMiddleware',
+    'django_plotly_dash.middleware.ExternalRedirectionMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -112,6 +122,8 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
+USE_L10N = True
+
 USE_TZ = True
 
 
@@ -123,7 +135,26 @@ STATICFILES_DIRS=[
     os.path.join(BASE_DIR, 'static'),
 ]
 
+STATICFILES_FINDERS = [
+
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+
+    'django_plotly_dash.finders.DashAssetFinder',
+    'django_plotly_dash.finders.DashComponentFinder',
+    'django_plotly_dash.finders.DashAppDirectoryFinder',
+]
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+PLOTLY_COMPONENTS = [
+    # django-plotly-dash components
+    'dpd_components',
+
+    #dtatic support if serving local assets
+    'dpd_static_support',
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

@@ -1,4 +1,5 @@
 {% load static %}
+{% load plotly_dash %}
 <!DOCTYPE html>
 <html>
     <head>       
@@ -28,7 +29,9 @@
                 <h1>Reglas de asociación</h1>
                 <p>Agregar introducción y cosas random</p>
             </div>
-            
+        </div>
+        <div class="content-container">
+            {% plotly_app name="section_apriori" %}
         </div>
         <footer>
             <script type="text/javascript" src="../../../static/js/barra.js"></script>
