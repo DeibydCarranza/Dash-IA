@@ -5,17 +5,23 @@ import os
 from .. import tool as tl 
 from django_plotly_dash import DjangoDash
 
+# Iniciando aplicación
 app = DjangoDash('section_apriori')
+
 path_file = os.path.join(os.path.dirname(__file__), '../data/file.csv')
 print(path_file)
 
-
+# Sección de retorno a renderizar
 app.layout = html.Div(children=[
     components.upload_component
-],
-style={'width': '100%', 'height': '100%'}
+],  
+    style={'width': '100%', 'height': '100%'}
 )   
 
+
+# ---- Callbacks -----------
+
+# Carga de archivo y renderizado de los elementos hijos
 @app.callback(
         Output('output-data-upload', 'children'),
         Input('upload-data', 'contents'),

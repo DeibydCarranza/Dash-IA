@@ -30,9 +30,12 @@
                 <h1>Métricas</h1>
                 <p>Agregar introducción y cosas random</p>
             </div>
+            {# Sección necesaria  por usar 'plotly_direct' -> header&footer #}
+            {% plotly_header %}
             <div class="{% plotly_class name='section_metricas' %} card" style="height: 100%; width: 100%">
-                {% plotly_app name='section_metricas' ratio=0.5 %}
+                {% plotly_direct name='section_metricas' %}
             </div>
+            {% plotly_footer %}
         </div>
         <footer>
             <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
