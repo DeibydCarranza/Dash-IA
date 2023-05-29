@@ -5,7 +5,7 @@ import os
 from . import tool as tl 
 from django_plotly_dash import DjangoDash
 
-app = DjangoDash('section_metricas')
+app = DjangoDash('section_cluster')
 path_file = os.path.join(os.path.dirname(__file__), '../data/file.csv')
 
 

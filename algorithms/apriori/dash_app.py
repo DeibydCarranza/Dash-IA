@@ -2,7 +2,7 @@ import dash
 from dash import dcc, html,Input, Output, callback, State
 from .. import components
 import os
-from .. import tool as tl 
+from . import tool as tl 
 from django_plotly_dash import DjangoDash
 
 # Iniciando aplicación

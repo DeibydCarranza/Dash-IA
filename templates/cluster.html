@@ -1,8 +1,9 @@
 {% load static %}
+{% load plotly_dash %}
 <!DOCTYPE html>
 <html>
     <head>       
-        <title>Clustering</title>
+        <title>Clúster</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
         <link rel="stylesheet" href="{% static 'css/global.css' %}" />
         <link rel="stylesheet" href="{% static 'css/nav.css' %}" />
@@ -11,6 +12,7 @@
         <link rel="stylesheet" href="{% static 'css/base.css' %}" />
         <link rel="stylesheet" href="{% static 'css/containers.css' %}" />
         <link rel="stylesheet" href="{% static 'css/header.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/main.css' %}" />
     </head>
 
     <body class="dash-template">   
@@ -25,13 +27,20 @@
 
         <div class="content-container">
             <div>
-                <h1>Clustering</h1>
+                <h1>Clúster</h1>
                 <p>Agregar introducción y cosas random</p>
             </div>
-            
+            {# Sección necesaria  por usar 'plotly_direct' -> header&footer #}
+            {% plotly_header %}
+            <div class="{% plotly_class name='section_cluster' %} card" style="height: 100%; width: 100%">
+                {% plotly_direct name='section_cluster' %}
+            </div>
+            {% plotly_footer %}
         </div>
         <footer>
+            <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
             <script type="text/javascript" src="../../../static/js/barra.js"></script>
         </footer>
     </body>
 </html>
+

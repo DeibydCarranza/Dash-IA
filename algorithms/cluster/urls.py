@@ -1,9 +1,9 @@
 from django.urls import path, include
-from .views import metrics_algorithm
+from .views import cluster_algorithm
 
 #Importar Dashboards
 from . import (dash_app)
 
 urlpatterns = [
-    path('', metrics_algorithm, name="metricas"),
+    path('', cluster_algorithm, name="cluster"),
 ]

@@ -3,8 +3,7 @@ from dash import dash_table,dcc,html
 import base64
 import pandas as pd
 import os
-
-
+from .. import components as comp
 
 """ Save data on file, generete dataframe and return dash_tabe """
 def parse_contents(contents, filename,path_file):
@@ -16,7 +15,7 @@ def parse_contents(contents, filename,path_file):
             write_on_file(decoded,path_file)        
             print(path_file)
             # generating dataframe
-            df = pd.read_csv(path_file, header=None) ##Considerar si lleva o no encabezado
+            df = pd.read_csv(path_file) 
             # Generate html component
             render = render_results(df)
             return render
@@ -28,23 +27,12 @@ def parse_contents(contents, filename,path_file):
 
     return render
 
-""" Create and return dash_table """
-def create_data_table(df):
-    table = dash_table.DataTable(
-        id="database-table",
-        columns=[{"name": i, "id": i} for i in df.columns],
-        data=df.to_dict("records"),
-        sort_action="native",
-        sort_mode="native",
-        page_size=10,
-        style_table={'overflowX': 'scroll','overflowY': 'scroll'}
-    )
-    return table
+
 
 """ Generate table """
 def render_results(df):
     # Create Data Table
-    table = create_data_table(df)
+    table = comp.create_data_table(df)
 
     # Create Layout
     res = html.Div(
