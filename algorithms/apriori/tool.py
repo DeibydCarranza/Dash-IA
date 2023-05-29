@@ -10,6 +10,7 @@ from . import method as met
 def parse_contents(contents, filename,path_file):
     _, content_string = contents.split(',')
     decoded = base64.b64decode(content_string)
+    print("\t--------------------")
     try:
         if 'csv' in filename:
             # writin on file
@@ -35,30 +36,34 @@ def render_results(df):
     # Create Data Table
     table = comp.create_data_table(df)
     grap_frec = met.graphFrecu(df)
-    results_df = met.application(df,0.01,0.3,2.3)
 
-    # Convertir el DataFrame en una lista de diccionarios
-    res_data = results_df.to_dict('records')
-    res_data = [data for data in res_data if isinstance(data, dict)]
+    #Renderizando el bloque Slider/Input
+    
 
-    # Generar los títulos de la tabla y sus filas
-    title_row = html.Tr([html.Th(col) for col in res_data[0].keys()] + [html.Th("Acciones")])
-    titles = html.Thead(title_row)
-    card_rows = []
-    for index, data in enumerate(res_data):
-        card_rows.extend(generate_card(data, index,res_data))
+    # results_df = met.application(df,0.01,0.3,2.3)
 
-    # Generar el cuerpo de la tabla con las filas de tarjetas
-    card_body = html.Tbody(card_rows)
-    table_rules = html.Table([titles, card_body], id="titulos")
-    cards_container = html.Div(table_rules, className='cards-container')
+    # # Convertir el DataFrame en una lista de diccionarios
+    # res_data = results_df.to_dict('records')
+    # res_data = [data for data in res_data if isinstance(data, dict)]
+
+    # # Generar los títulos de la tabla y sus filas
+    # title_row = html.Tr([html.Th(col) for col in res_data[0].keys()] + [html.Th("Acciones")])
+    # titles = html.Thead(title_row)
+    # card_rows = []
+    # for index, data in enumerate(res_data):
+    #     card_rows.extend(generate_card(data, index,res_data))
+
+    # # Generar el cuerpo de la tabla con las filas de tarjetas
+    # card_body = html.Tbody(card_rows)
+    # table_rules = html.Table([titles, card_body], id="titulos")
+    # cards_container = html.Div(table_rules, className='cards-container')
     
     # Create Layout
     res = html.Div(
         children=[
             table,
             dcc.Graph(id="graph-distribution", figure=grap_frec), 
-            cards_container
+            # cards_container
         ],
         className='render-container',
         style={
@@ -110,3 +115,7 @@ def generate_card(data, index,res_data):
                 html.Td(str(value)) for value in data.values()
             ] + [html.Td(button)]),
             description_row]
+
+
+
+
