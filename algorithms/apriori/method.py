@@ -25,8 +25,8 @@ def img_gen(Lista):
     fig.update_layout(
         title='Distribución de los datos',
         xaxis_title='Frecuencia',
-        yaxis_title='Item',
-        height=800,
+        yaxis_title='Elemento',
+        height=1000,
         font=dict(
             family='Arial',
             size=12

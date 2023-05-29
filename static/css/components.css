@@ -1,4 +1,4 @@
-// Upload_section
+/* Upload_section */
 .box-upload {
   margin: 50px 10px;
 }
@@ -12,7 +12,7 @@
   text-align: center;
 }
 
-// //Table Apriori
+/* Table Apriori*/
 .table-container {
 max-width: 100%;
 overflow-x: auto;

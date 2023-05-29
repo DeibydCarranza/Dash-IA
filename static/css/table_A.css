@@ -1,14 +1,29 @@
-/* Estilos de la tabla */
-table.dataTable {
+/* Estilos de la tabla Apriori - reglas*/
+.single-column-table {
+    table-layout: fixed;
     width: 100%;
-    margin: 0 auto;
-    clear: both;
-    border-collapse: separate;
-    border-spacing: 0;
 }
-.table-container {
-    overflow-y: auto;
+
+.single-column-table td {
+    word-break: break-word;
 }
-.page-button {
-    margin-right: 10px;
+
+.nested-table {
+    width: 100%;
+    background-color: transparent !important;
+    border: solid 1px transparent !important;
+    margin: 0 0 0.6em 0;
+}
+
+.nested-table tr {
+    background-color: transparent !important;
+    border: solid 1px transparent !important;
+}
+
+table td{
+    padding: 0 !important;
+}
+
+.cards-container th{
+    text-align: center;
 }
