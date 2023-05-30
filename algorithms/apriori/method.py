@@ -38,26 +38,27 @@ def img_gen(Lista):
 def application(dataSet, support, confidence, lift):
     dataSet = dataSet.stack().groupby(level=0).apply(list).tolist() 
     ReglasC1 = apriori(dataSet, 
-                   min_support=support, 
-                   min_confidence=confidence, 
+                   min_support=support/100, 
+                   min_confidence=confidence/100, 
                    min_lift=lift)
     ResultadosC1 = list(ReglasC1)
     resultados = []
     for item in ResultadosC1:
-        Emparejar = item[0]
-        items = [x for x in Emparejar]
-        regla = ', '.join(items).strip('{}')
-        antecedente = ', '.join(item[2][0][0]).strip('{}')
-        consecuente = ', '.join(item[2][0][1]).strip('{}')
-        resultados.append({
-            'Regla': regla,
-            'Antecedente': antecedente,
-            'Consecuente': consecuente,
-            'Soporte': "{:.3f}%".format(item[1] * 100),
-            'Confianza': "{:.3f}%".format(item[2][0][2] * 100),
-            'Elevación': "{:.3f}".format(item[2][0][3])
-        })
-    
+        if item[2][0][3] is not None: 
+            Emparejar = item[0]
+            items = [x for x in Emparejar]
+            regla = ', '.join(items).strip('{}')
+            antecedente = ', '.join(item[2][0][0]).strip('{}')
+            consecuente = ', '.join(item[2][0][1]).strip('{}')
+            resultados.append({
+                'Regla': regla,
+                'Antecedente': antecedente,
+                'Consecuente': consecuente,
+                'Soporte': "{:.3f}%".format(item[1] * 100),
+                'Confianza': "{:.3f}%".format(item[2][0][2] * 100),
+                'Elevación': "{:.3f}".format(item[2][0][3])
+            })
+        
     df_resultados = pd.DataFrame(resultados)
     return df_resultados
 
