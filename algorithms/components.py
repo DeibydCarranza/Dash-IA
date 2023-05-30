@@ -26,14 +26,24 @@ upload_component = html.Div([
 ])
 
 """ Create and return dash_table """
-def create_data_table(df):
-    table = dash_table.DataTable(
-        id="database-table",
-        columns=[{"name": i, "id": i} for i in df.columns],
-        data=df.to_dict("records"),
-        sort_action="native",
-        sort_mode="native",
-        page_size=10,
-        style_table={'overflowX': 'scroll','overflowY': 'scroll', 'color': '#3c3c3c'}
-    )
-    return table
+def create_data_table(df, indexFlag):
+       if indexFlag:
+              df_with_index = df.reset_index()
+              columns = [{"name": "Index", "id": "index"}] + [{"name": i, "id": i} for i in df.columns]
+              data = df_with_index.to_dict("records")
+       else:
+              columns = [{"name": i, "id": i} for i in df.columns]
+              data = df.to_dict("records")
+
+       table = dash_table.DataTable(
+              id="database-table",
+              columns=columns,
+              data=data,
+              sort_action="native",
+              sort_mode="native",
+              page_size=10,
+              style_table={'overflowX': 'scroll', 'overflowY': 'scroll', 'color': '#3c3c3c'}
+       )
+       return table
+
+

@@ -33,7 +33,7 @@ def parse_contents(contents, filename,path_file):
 """ Generate table & frecuence graph"""
 def render_results(df):
     # Create Data Table
-    table = comp.create_data_table(df)
+    table = comp.create_data_table(df,False)
     grap_frec = met.graphFrecu(df)
     
     # Create Layout

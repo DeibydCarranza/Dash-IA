@@ -32,7 +32,7 @@ def parse_contents(contents, filename,path_file):
 """ Generate table """
 def render_results(df):
     # Create Data Table
-    table = comp.create_data_table(df)
+    table = comp.create_data_table(df,True)
 
     # Create Layout
     res = html.Div(
