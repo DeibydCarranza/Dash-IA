@@ -34,6 +34,6 @@ def create_data_table(df):
         sort_action="native",
         sort_mode="native",
         page_size=10,
-        style_table={'overflowX': 'scroll','overflowY': 'scroll'}
+        style_table={'overflowX': 'scroll','overflowY': 'scroll', 'color': '#3c3c3c'}
     )
     return table

@@ -3,8 +3,8 @@
 
 # Para crear nuevas aplicaciones
 
-python4 -m venv venv
-#source venv/bin/activat
+python3 -m venv venv
+#source venv/bin/activate
 pip install django
 python manage.py startapp name_application
 

@@ -7,14 +7,11 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
         <link rel="stylesheet" href="{% static 'css/global.css' %}" />
         <link rel="stylesheet" href="{% static 'css/nav.css' %}" />
-        <link rel="stylesheet" href="{% static 'css/home.css' %}" />
         <link rel="stylesheet" href="{% static 'css/dark.css' %}" />
         <link rel="stylesheet" href="{% static 'css/base.css' %}" />
         <link rel="stylesheet" href="{% static 'css/containers.css' %}" />
         <link rel="stylesheet" href="{% static 'css/header.css' %}" />
-        <link rel="stylesheet" href="{% static 'css/table_A.css' %}" />
-
-
+        <link rel="stylesheet" href="{% static 'css/home.css' %}" />
     </head>
 
     <body class="dash-template">   
@@ -29,22 +26,22 @@
 
         <div class="content-container">
             <div>
-                <h1>Reglas de asociación</h1>
+                <h1>Regresión logística</h1>
                 <p>Agregar introducción y cosas random</p>
             </div>
             
             {# Sección necesaria  por usar 'plotly_direct' -> header&footer #}
             {% plotly_header %}
-            <div class="{% plotly_class name='section_apriori' %} card" style="height: 100%; width: 100%">
-                {% plotly_direct name='section_apriori'  %}
+            <div class="{% plotly_class name='section_regression' %} card" style="height: 100%; width: 100%">
+                {% plotly_direct name='section_regression'  %}
             </div>
-            {% plotly_footer %}
+            {% plotly_footer %} 
 
         </div>
         <footer>
             <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
             <script type="text/javascript" src="../../../static/js/barra.js"></script>
-            <script type="text/javascript" src="../static/js/boton.js"></script>
+
 
             
         </footer>

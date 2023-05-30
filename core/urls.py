@@ -28,5 +28,6 @@ urlpatterns = [
     path('apriori/',include('algorithms.apriori.urls')),
     path('metricas/',include('algorithms.metricas.urls')),
     path('clustering/',include('algorithms.cluster.urls')),
+    path('regresion_logistica/',include('algorithms.regressionLog.urls')),
 ]
 

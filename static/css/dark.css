@@ -1,10 +1,8 @@
 body.dark{
-    --body-color: #18191a;
+    --body-color: #1c1e1f;
     --sidebar-color: #242526;
-    --primary-color: #3a3b3c;
-    --primary-color-light: #3a3b3c;
-    --toggle-color: #fff;
-    --text-color: #ccc;
+    --primary-color-light: #4f2222;
+    --text-color: #fff;
 }
 
 body.dark .sidebar header .toggle{
