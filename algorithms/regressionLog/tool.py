@@ -18,33 +18,52 @@ def parse_contents(contents, filename,path_file):
             df = pd.read_csv(path_file) 
             # Generate html component
             render = render_results(df)
-            return render
+            return render, df
     except Exception as e:
         print(e)
         return html.Div([
             'Archivo erroneo, solo archivos .csv'
         ])
 
-    return render
+    return render, None
 
 
 
 """ Generate table """
 def render_results(df):
     # Create Data Table
-    table = comp.create_data_table(df,True)
+    table = comp.create_data_table(df, True)
+
+    # Tratamiento de los datos, suprime las columnas que tiene valores no numéricos
+    dff = comp.validar_columnas_numericas(df)
+    graph_corr = comp.interactive_table(dff)
+    correlation_matriz = comp.interactive_correlation_matrix(dff)
 
     # Create Layout
     res = html.Div(
         children=[
-            table
+            table,
+
+            dcc.Tabs(id="tabs-example-graph", value='tab-matrices-graph',children=[
+                    dcc.Tab(label='Matriz de correlaciones', value='tab-1-example-graph', children=[
+                            graph_corr
+                            ]
+                    ),
+                    dcc.Tab(label='Mapa de calor', value='tab-2-example-graph',children=[
+                            correlation_matriz
+                        ]),
+                ]
+            ),
+            
+            html.Div("Veamos qué pasa"),
         ],
         className='render-container',
         style={
             'width': '100%',
-        }
-    )
+        })
     return res
+
+
 
 """Create Pandas DataFrame from local CSV."""
 def write_on_file(decoded,path_file):

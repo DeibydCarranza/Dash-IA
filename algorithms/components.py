@@ -1,4 +1,7 @@
 from dash import dcc, html,dash_table
+import plotly.express as px
+import plotly.graph_objects as go
+import numpy as np
 
 """ Generate update component (just html) """
 upload_component = html.Div([
@@ -45,5 +48,58 @@ def create_data_table(df, indexFlag):
               style_table={'overflowX': 'scroll', 'overflowY': 'scroll', 'color': '#3c3c3c'}
        )
        return table
+
+""" Create and return correlational interactive graph """
+def interactive_table(df):
+    df_filtered = df.iloc[:, 1:]
+    color_column = df_filtered.columns[0]
+    fig = px.scatter_matrix(df_filtered, color=color_column)
+    fig.update_layout(
+           height=900,
+           title='Matriz de correlación',
+       )
+
+    return dcc.Graph(figure=fig)
+
+"""Validar que el dataframe solo tiene valores numéricos, si no elimina las columnas extra"""
+def validar_columnas_numericas(df):
+       columnas_numericas = []
+       for columna in df.columns:
+              if df[columna].dtype in [int, float]:
+                     columnas_numericas.append(columna)
+       
+       df_numerico = df[columnas_numericas]
+       return df_numerico
+
+"""" Matriz de correlaciones """
+def interactive_correlation_matrix(df):
+       correlation_matrix = df.corr()
+       mask = np.tri(correlation_matrix.shape[0], k=0)
+       correlation_matrix = np.where(mask, correlation_matrix, np.nan)
+       correlation_matrix = np.flipud(correlation_matrix)  # Invertir las filas de la matriz
+
+       fig = go.Figure(data=go.Heatmap(
+              z=correlation_matrix,
+              x=df.columns,
+              y=df.columns[::-1],
+              colorscale='RdBu_r',
+              zmin=-1,
+              zmax=1,
+              colorbar=dict(
+              title='Correlación'
+              ),
+              hovertemplate='x: %{x}<br>y: %{y}<br>correlation: %{z}<extra></extra>'
+       ))
+
+       fig.update_layout(
+              title='Matriz de correlación',
+              height=700,
+              width=700,
+              xaxis_showgrid=False,
+              yaxis_showgrid=False,
+              template='plotly_white'
+       )
+
+       return dcc.Graph(figure=fig)
 
 
