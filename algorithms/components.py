@@ -103,3 +103,24 @@ def interactive_correlation_matrix(df):
        return dcc.Graph(figure=fig)
 
 
+""" Input de size_train, random_state, shuffle"""
+def mod_params_train(index):
+    layout = html.Div([
+        html.Div("Por defecto se han prestablecido valores, modifícalos a tu gusto"),
+        dcc.Input(
+            id=f"input_size_train_{index}", type="number", placeholder="Size train",
+            min=1, max=100, step=0.1, value=None
+        ),
+        dcc.Input(
+            id=f"input_random_state_{index}", type="number", placeholder="Valor random", value=None
+        ),
+        dcc.RadioItems(
+            id=f"shuffle_radio_{index}",
+            options=[
+                {'label': 'True', 'value': 'True'},
+                {'label': 'False', 'value': 'False'},
+            ],
+            value='True', inline=True
+        )
+    ])
+    return layout

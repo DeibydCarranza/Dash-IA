@@ -59,6 +59,9 @@ def render_results(df):
                 ), 
                 html.Div(id='columns-output-container-1')
             ]),
+
+            comp.mod_params_train(1),
+            
             html.Button('Entrenar', id='btn-train', n_clicks=0),
 
             html.Div("",style={'margin-bottom':'40px'}),
