@@ -39,23 +39,39 @@ def render_results(df):
     graph_corr = comp.interactive_table(dff)
     correlation_matriz = comp.interactive_correlation_matrix(dff)
 
+    # Omitir las variables de clase que corresponden a Y 
+    columnas = [col for col in dff.columns if col not in ['Diagnosis', 'Outcome']]
+
     # Create Layout
     res = html.Div(
         children=[
             table,
 
+            html.Div("Veamos qué pasa"),
+            html.Div([
+                dcc.Dropdown(
+                    options=[{'label': col, 'value': col} for col in columnas],
+                    id='columns-dropdown-1',
+                    placeholder="Selecciona las variables a mantener",
+                    multi=True,
+                    optionHeight=50
+
+                ), 
+                html.Div(id='columns-output-container-1')
+            ]),
+            html.Button('Entrenar', id='btn-train', n_clicks=0),
+
+            html.Div("",style={'margin-bottom':'40px'}),
+
             dcc.Tabs(id="tabs-example-graph", value='tab-matrices-graph',children=[
                     dcc.Tab(label='Matriz de correlaciones', value='tab-1-example-graph', children=[
                             graph_corr
-                            ]
-                    ),
+                        ]),
                     dcc.Tab(label='Mapa de calor', value='tab-2-example-graph',children=[
                             correlation_matriz
                         ]),
-                ]
-            ),
-            
-            html.Div("Veamos qué pasa"),
+                ],style={'margin-bottom':'70px'}
+            ),            
         ],
         className='render-container',
         style={

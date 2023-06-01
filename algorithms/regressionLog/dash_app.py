@@ -4,6 +4,7 @@ from .. import components
 import os
 from . import tool as tl 
 from django_plotly_dash import DjangoDash
+from . import method as met
 
 #  ---------- Iniciando aplicación ---------------
 app = DjangoDash('section_regression')
@@ -45,3 +46,18 @@ def update_output(list_of_contents, list_of_names):
             render
         ]
         return children
+
+# Paso de columnas para ser procesadas mediante dropdown
+@app.callback(
+    Output('columns-output-container-1', 'children'),
+    [Input('btn-train', 'n_clicks')],
+    [State('columns-dropdown-1', 'value')]
+)
+def update_output(n_clicks, columns_values):
+    #Seleccionamos la variable de resultados manualmente
+    clase = 'Diagnosis' if 'Diagnosis' in df.columns else 'Outcome'
+
+    if n_clicks is not None and columns_values is not None and len(columns_values) >0:
+        met.variablesClasePredict(df, columns_values, clase)
+        return f'Carga exitosa de entrenamiento'
+    return f'No has seleccionado ninguna variable para entrenar'
