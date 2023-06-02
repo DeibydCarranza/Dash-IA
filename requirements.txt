@@ -46,3 +46,6 @@ django-storages==1.13.2
 djangorestframework==3.14.0
 dpd-static-support==0.0.5
 seaborn==0.12.2
+dash-bootstrap-components==1.4.1
+django-bootstrap4==23.1
+dash-daq==0.5.0

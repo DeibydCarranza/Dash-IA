@@ -2,6 +2,9 @@ from dash import dcc, html,dash_table
 import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
+import dash_bootstrap_components as dbc
+import dash_daq as daq
+
 
 """ Generate update component (just html) """
 upload_component = html.Div([
@@ -102,25 +105,62 @@ def interactive_correlation_matrix(df):
 
        return dcc.Graph(figure=fig)
 
+"""" Coorelational Matrix & heatmap"""
+def correlational_matrix(df):
+       graph_corr = interactive_table(df)
+       correlation_matriz = interactive_correlation_matrix(df)
+
+       layout = html.Div([
+              dcc.Tabs(id="tabs-example-graph", value='tab-matrices-graph',children=[
+                     dcc.Tab(label='Matriz de correlaciones', value='tab-1-example-graph', children=[
+                            graph_corr
+                     ]),
+                     dcc.Tab(label='Mapa de calor', value='tab-2-example-graph',children=[
+                            correlation_matriz
+                     ]),
+              ],style={'margin-bottom':'70px'}
+              )
+       ])
+       return layout
 
 """ Input de size_train, random_state, shuffle"""
 def mod_params_train(index):
-    layout = html.Div([
-        html.Div("Por defecto se han prestablecido valores, modifícalos a tu gusto"),
-        dcc.Input(
-            id=f"input_size_train_{index}", type="number", placeholder="Size train",
-            min=1, max=100, step=0.1, value=None
-        ),
-        dcc.Input(
-            id=f"input_random_state_{index}", type="number", placeholder="Valor random", value=None
-        ),
-        dcc.RadioItems(
-            id=f"shuffle_radio_{index}",
-            options=[
-                {'label': 'True', 'value': 'True'},
-                {'label': 'False', 'value': 'False'},
-            ],
-            value='True', inline=True
-        )
-    ])
+    layout = dbc.Container([
+        html.Div("Por defecto se han prestablecido valores, modifícalos a tu gusto si así lo deseas"),
+        dbc.Row([
+            dbc.Col([
+                html.Label("Tamaño de entrenamiento %"),
+                dcc.Input(
+                    id=f"input_size_train_{index}",
+                    type="number",
+                    placeholder="Size train",
+                    min=1,
+                    max=100,
+                    step=0.1,
+                    value=None,
+                    className="input-field"
+                )
+            ], width=4),
+            dbc.Col([
+                html.Label("Datos random"),
+                dcc.Input(
+                    id=f"input_random_state_{index}",
+                    type="number",
+                    placeholder="Valor random",
+                    value=None,
+                    className="input-field"
+                )
+            ], width=4),
+            dbc.Col([
+                html.Label("Shuffle"),
+                daq.BooleanSwitch(id=f"boolean-switch_{index}", on=False, style={
+                     'marginRight': '10px', 
+                     'borderRadius': '20px', 
+                     'padding': '2px',
+                     'boxShadow': '0 0 3px rgba(0, 0, 0, 0.3)' 
+              })
+            ], width=4)
+        ], className="input-row")
+    ], className="input-container")
+
     return layout

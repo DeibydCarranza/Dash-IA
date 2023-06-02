@@ -4,6 +4,8 @@ import base64
 import pandas as pd
 import os
 from .. import components as comp
+import dash_bootstrap_components as dbc
+
 
 """ Save data on file, generete dataframe and return dash_tabe """
 def parse_contents(contents, filename,path_file):
@@ -17,15 +19,15 @@ def parse_contents(contents, filename,path_file):
             # generating dataframe
             df = pd.read_csv(path_file) 
             # Generate html component
-            render = render_results(df)
-            return render, df
+            render,df_filtered = render_results(df)
+            return render, df, df_filtered
     except Exception as e:
         print(e)
         return html.Div([
             'Archivo erroneo, solo archivos .csv'
         ])
 
-    return render, None
+    return render, None, None
 
 
 
@@ -35,12 +37,11 @@ def render_results(df):
     table = comp.create_data_table(df, True)
 
     # Tratamiento de los datos, suprime las columnas que tiene valores no numéricos
-    dff = comp.validar_columnas_numericas(df)
-    graph_corr = comp.interactive_table(dff)
-    correlation_matriz = comp.interactive_correlation_matrix(dff)
+    df_filtered = comp.validar_columnas_numericas(df)
+
 
     # Omitir las variables de clase que corresponden a Y 
-    columnas = [col for col in dff.columns if col not in ['Diagnosis', 'Outcome']]
+    columnas = [col for col in df_filtered.columns if col not in ['Diagnosis', 'Outcome']]
 
     # Create Layout
     res = html.Div(
@@ -66,21 +67,20 @@ def render_results(df):
 
             html.Div("",style={'margin-bottom':'40px'}),
 
-            dcc.Tabs(id="tabs-example-graph", value='tab-matrices-graph',children=[
-                    dcc.Tab(label='Matriz de correlaciones', value='tab-1-example-graph', children=[
-                            graph_corr
-                        ]),
-                    dcc.Tab(label='Mapa de calor', value='tab-2-example-graph',children=[
-                            correlation_matriz
-                        ]),
-                ],style={'margin-bottom':'70px'}
-            ),            
+            #Sección para poder desplegar las gráficas de correlaciones
+            html.Div([
+                html.Button("Mostrar/Ocultar", id="toggle-button-1"),
+                html.Div(id="acordeon-content-1")
+            ])
+            
+
+
         ],
         className='render-container',
         style={
             'width': '100%',
         })
-    return res
+    return res,df_filtered
 
 
 
