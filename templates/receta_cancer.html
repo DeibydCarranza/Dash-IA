@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Receta Médica</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f2f2f2;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      position: raelative;
+      width: 100vw; /* Ancho de la ventana */
+      height: 100vh; /* Altura de la ventana */
+      background-color: #fff;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .header {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 2; 
+    }
+
+    .header button {
+      background-color: transparent;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .image-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%); 
+      z-index: 1; 
+      width: 80%;
+      max-width: 90rem;
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.8);
+      border-radius: 4px;
+    }
+
+    .image-container img {
+      width: 100%;
+      height: auto;
+      object-fit: contain; 
+      display: block;
+    }
+
+    .form-container {
+        position: absolute;
+        top: 60%;
+        left: 50%;
+        transform: translate(-50%, -50%); 
+        z-index: 2; 
+        padding: 20px;
+        border-radius: 4px;
+        width: 90%;
+        max-width: max-content; 
+        margin: 0 auto; 
+      }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-group input[type="number"] {
+      width: 100%;
+      padding: 5px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .form-group button {
+      padding: 10px 20px;
+      background-color: red;
+      color: #fff;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        row-gap: 5px;
+        column-gap: 90px;
+      }
+  
+      .grid-item {
+        padding: 10px;
+      }
+  
+      .grid-item input[type="text"] {
+        width: 100%;
+        padding: 5px;
+        font-size: 16px;
+        border: none;
+        outline: none;
+      }
+    #paciente{
+        position: absolute;
+        left: 50px;
+        top: -120px;
+    }
+    #diagnostico{
+        position: absolute;
+        left: 800px;
+        top: -120px;
+    }
+    input[type="text"] {
+        padding: 5px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+
+  </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+          <button onclick="goBack()">Regresar</button>
+        </div>
+    <div class="image-container">
+        <img src="/static/img/receta.png" alt="Receta Médica">
+        
+
+        <div class="form-container">
+            <form>
+                <div id="paciente">
+                    <input type="text" name="inputpac" placeholder="paciente" required>    
+                </div>
+                <div id="diagnostico">
+                    <input type="text" name="inputdiag" placeholder="" readonly>    
+                </div>
+
+              <div class="form-group">
+
+              <div class="grid-container">
+                <div class="grid-item">
+                    <label for="input1">Diagnóstico:</label>
+                    <input type="number" name="input1" placeholder="Diagnóstico" required>
+                </div>
+                <div class="grid-item">
+                    <label for="input1">Radio:</label>
+                  <input type="number" name="input2" placeholder="Radio" required>
+                </div>
+                <div class="grid-item">
+                    <label for="input1">Textura:</label>
+                  <input type="number" name="input3" placeholder="Textura" required>
+                </div>
+                <div class="grid-item">
+                    <label for="input1">Perímetro:</label>
+                  <input type="number" name="input4" placeholder="Perímetro" required>
+                </div>
+                <div class="grid-item">
+                    <label for="input1">Área</label>
+                  <input type="number" name="input5" placeholder="Área" required>
+                </div>
+                <div class="grid-item">
+                    <label for="input1">Smoothness:</label>
+                  <input type="number" name="input6" placeholder="Smoothness" required>
+                </div>
+                <div class="grid-item">
+                    <label for="input1">Compactness:</label>
+                  <input type="number" name="input7" placeholder="Compactness" required>
+                </div>
+                <div class="grid-item">
+                    <label for="input1">Concavidad:</label>
+                  <input type="number" name="input8" placeholder="Concavidad" required>
+                </div>
+                <div class="grid-item">
+                    <label for="input1">Puntos concavos:</label>
+                  <input type="number" name="input9" placeholder="Puntos concavos" required>
+                </div>
+                <div class="grid-item">
+                    <label for="input1">Simetría:</label>
+                  <input type="number" name="input10" placeholder="Simetría" required>
+                </div>
+                <div class="grid-item">
+                    <label for="input1">Dimensión fractal:</label>
+                  <input type="number" name="input11" placeholder="Dimensión fractal" required>
+                </div>
+              </div>
+      
+              <button type="submit">Generar diagnóstico</button>
+            </div>
+            </form>
+          </div> 
+        </div>
+
+  <script>
+    function goBack() {
+      window.history.back();
+    }
+  </script>
+</body>
+</html>
