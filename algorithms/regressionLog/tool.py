@@ -69,10 +69,12 @@ def render_results(df):
 
             #Sección para poder desplegar las gráficas de correlaciones
             html.Div([
-                html.Button("Mostrar/Ocultar", id="toggle-button-1"),
+                html.Button("Apoyo para seleccionar columnas", id="toggle-button-1"),
                 html.Div(id="acordeon-content-1")
-            ])
+            ]),
             
+            html.Div(id='model-validation-layout')
+
 
 
         ],

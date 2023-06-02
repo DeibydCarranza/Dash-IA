@@ -23,7 +23,8 @@ df_filtered = None
 
 ## ----------  Seción a renderizar   ---------- 
 app.layout = html.Div(children=[
-    components.upload_component
+    components.upload_component,
+
 ],
 style={'width': '100%', 'height': '100%'}
 )   
@@ -51,23 +52,27 @@ def update_output(list_of_contents, list_of_names):
 
 # Paso de columnas para ser procesadas mediante dropdown
 @app.callback(
-    Output('columns-output-container-1', 'children'),
+    [Output('columns-output-container-1', 'children'), Output('model-validation-layout', 'children')],
     [Input('btn-train', 'n_clicks')],
     [State('columns-dropdown-1', 'value'),
      State('input_size_train_1', 'value'),
      State('input_random_state_1', 'value'),
-     State('boolean-switch_1', 'on')]
+     State('boolean-switch_1', 'on'),
+     State('model-validation-layout', 'children')]
 )
-def update_output_columns(n_clicks, columns_values, size_train, random_state, shuffle):
-    #Seleccionamos la variable de resultados manualmente
+def update_output_columns(n_clicks, columns_values, size_train, random_state, shuffle, current_validation_layout):
+    # Seleccionamos la variable de resultados manualmente
     claseSalida = 'Diagnosis' if 'Diagnosis' in df.columns else 'Outcome'
 
-    if n_clicks is not None and columns_values is not None and len(columns_values) >0:
-        score = met.variablesClasePredict(df, columns_values, claseSalida, (size_train/100), random_state, shuffle)
-        
-        met.modelValidation()
-        return f'Carga exitosa de entrenamiento'
-    return f'No has seleccionado ninguna variable para entrenar'
+    if n_clicks is not None and columns_values is not None and len(columns_values) > 0:
+        met.variablesClasePredict(df, columns_values, claseSalida, (size_train/100), random_state, shuffle)
+
+        layout_validation = met.modelValidation()
+
+        return f'Carga exitosa de entrenamiento', layout_validation
+
+    return f'No has seleccionado ninguna variable para entrenar', current_validation_layout
+
 
 
 # Toggle display
