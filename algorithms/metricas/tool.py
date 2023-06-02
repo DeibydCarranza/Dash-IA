@@ -2,9 +2,8 @@ import dash
 from dash import dash_table,dcc,html
 import base64
 import pandas as pd
-import os
+import numpy as np
 from .. import components as comp
-
 """ Save data on file, generete dataframe and return dash_tabe """
 def parse_contents(contents, filename,path_file):
     _, content_string = contents.split(',')
@@ -18,16 +17,15 @@ def parse_contents(contents, filename,path_file):
             df = pd.read_csv(path_file) 
             # Generate html component
             render = render_results(df)
-            return render
+            print(render)
+            return render,df 
     except Exception as e:
         print(e)
         return html.Div([
             'Archivo erroneo, solo archivos .csv'
         ])
 
-    return render
-
-
+    return render,None
 
 """ Generate table """
 def render_results(df):
@@ -50,3 +48,12 @@ def render_results(df):
 def write_on_file(decoded,path_file):
     with open(path_file, 'w') as f:
             f.write(decoded.decode("utf-8"))
+
+def convert_to_dataframe(data):
+    if isinstance(data, pd.DataFrame):
+        return data
+    elif isinstance(data, np.ndarray):
+        return pd.DataFrame(data)
+    else:
+        raise ValueError("El parámetro de entrada no es un DataFrame ni un arreglo de NumPy.")
+
