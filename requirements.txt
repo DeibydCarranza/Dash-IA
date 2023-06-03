@@ -49,3 +49,5 @@ seaborn==0.12.2
 dash-bootstrap-components==1.4.1
 django-bootstrap4==23.1
 dash-daq==0.5.0
+dash-mantine-components==0.12.1
+dash-iconify==0.1.2
