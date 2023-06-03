@@ -1,0 +1,135 @@
+.
+├── README.md
+├── algorithms
+│   ├── apriori
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── dash_app.py
+│   │   ├── method.py
+│   │   ├── migrations
+│   │   │   └── __init__.py
+│   │   ├── models.py
+│   │   ├── tests.py
+│   │   ├── tool.py
+│   │   ├── urls.py
+│   │   └── views.py
+│   ├── cluster
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── dash_app.py
+│   │   ├── migrations
+│   │   │   └── __init__.py
+│   │   ├── models.py
+│   │   ├── tests.py
+│   │   ├── tool.py
+│   │   ├── urls.py
+│   │   └── views.py
+│   ├── components.py
+│   ├── data
+│   │   └── file.csv
+│   ├── metricas
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── dash_app.py
+│   │   ├── method.py
+│   │   ├── migrations
+│   │   │   └── __init__.py
+│   │   ├── models.py
+│   │   ├── tests.py
+│   │   ├── tool.py
+│   │   ├── urls.py
+│   │   └── views.py
+│   └── regressionLog
+│       ├── __init__.py
+│       ├── admin.py
+│       ├── apps.py
+│       ├── dash_app.py
+│       ├── method.py
+│       ├── migrations
+│       │   └── __init__.py
+│       ├── models.py
+│       ├── tests.py
+│       ├── tool.py
+│       ├── urls.py
+│       └── views.py
+├── core
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── data_preload
+│   ├── Hipoteca-M.csv
+│   ├── WDBCOriginal_M_RL.csv
+│   ├── diabetes_RL.csv
+│   ├── movies_A.csv
+│   ├── store_data_A.csv
+│   └── tvShow_A.csv
+├── db.sqlite3
+├── make_env.sh
+├── manage.py
+├── requirements.txt
+├── static
+│   ├── css
+│   │   ├── base.css
+│   │   ├── components.css
+│   │   ├── containers.css
+│   │   ├── dark.css
+│   │   ├── global.css
+│   │   ├── header.css
+│   │   ├── home.css
+│   │   ├── main.css
+│   │   ├── metricas.css
+│   │   ├── nav.css
+│   │   └── table_A.css
+│   ├── fonts
+│   │   ├── lobster-regular-webfont.woff
+│   │   ├── lobster-regular-webfont.woff2
+│   │   ├── worksans-variablefont_wght-webfont.woff
+│   │   └── worksans-variablefont_wght-webfont.woff2
+│   ├── img
+│   │   ├── favicon.png
+│   │   ├── logo.jpg
+│   │   ├── logo.png
+│   │   ├── params.png
+│   │   ├── pic01.jpg
+│   │   ├── pic02.jpg
+│   │   ├── pic03.jpg
+│   │   ├── pic04.jpg
+│   │   ├── pic05.jpg
+│   │   ├── pic06.jpg
+│   │   ├── pic07.jpg
+│   │   ├── pic08.jpg
+│   │   ├── pic09.jpg
+│   │   ├── pic10.jpg
+│   │   ├── pic11.jpg
+│   │   ├── pic12.jpg
+│   │   ├── pic13.jpg
+│   │   ├── pic14.jpg
+│   │   └── pic15.jpg
+│   └── js
+│       ├── barra.js
+│       ├── boton.js
+│       ├── components.js
+│       ├── main.js
+│       ├── papaparse.js
+│       ├── table_Ap.js
+│       └── upload.js
+├── templates
+│   ├── apriori.html
+│   ├── cluster.html
+│   ├── index.html
+│   ├── interactive_table.html
+│   ├── layout.html
+│   ├── layout_Apriori.jinja2
+│   ├── layout_Clustering.jinja2
+│   ├── layout_Metricas.jinja2
+│   ├── metricas.html
+│   ├── navbar.html
+│   └── regression.html
+└── tree.txt
+
+19 directories, 114 files
