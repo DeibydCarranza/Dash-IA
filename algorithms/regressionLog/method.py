@@ -23,7 +23,6 @@ TypeG = "Diabetes"
 def variablesClasePredict(df,columns_values,claseSalida,size,random_s,shuffle):
     global TypeG
     if claseSalida == 'Diagnosis':
-        print("-------------")
         df = df.replace({'M': 0, 'B': 1})
         TypeG = 'Cáncer'
 
@@ -62,14 +61,21 @@ def modelValidation():
                                    ModeloClasificacion, 
                                    rownames=['Reales'], 
                                    colnames=['Clasificación']) 
-    print(Matriz_Clasificacion)
+    
     exactitud = accuracy_score(Y_validation,Y_ClasificacionRL)
 
     report = classification_report(Y_validation, Y_ClasificacionRL)
 
 
     ## ------ Gráficas y Layout
-    # Crear gráfica de barras interactiva con Plotly
+    layout = section_graphs_interactive(exactitud,report,Matriz_Clasificacion)
+
+    return layout
+
+
+
+def section_graphs_interactive(exactitud,report,Matriz_Clasificacion):
+        # Crear gráfica de barras interactiva con Plotly
     graph_vali = px.scatter(x=X_validation[:, 0], y=X_validation[:, 1], color=Y_validation)
     graph_vali.update_layout(
         title="Gráfica de validación",
@@ -102,10 +108,8 @@ def modelValidation():
         style={"overflowX": "scroll"},
     )
 
-
-    roc_curve_fig = go.Figure()
-
     # Calcular la curva ROC
+    roc_curve_fig = go.Figure()
     fpr, tpr, _ = roc_curve(Y_validation, ClasificacionRL.predict_proba(X_validation)[:, 1])
 
     # Crear la gráfica ROC
@@ -154,10 +158,9 @@ def modelValidation():
         # Exactitud
         html.H3(f'Exactitud: {exactitud}'),
 
-        # Reporte de clasificación
+        # Grid con las secciones classification_report_div y dcc.Graph(figure=roc_curve_fig)
         html.H3('Reporte de Clasificación:'),
 
-        # Grid con las secciones classification_report_div y dcc.Graph(figure=roc_curve_fig)
         Grid_layout
     ])
 
