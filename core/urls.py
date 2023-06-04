@@ -29,5 +29,7 @@ urlpatterns = [
     path('metricas/',include('algorithms.metricas.urls')),
     path('clustering/',include('algorithms.cluster.urls')),
     path('regresion_logistica/',include('algorithms.regressionLog.urls')),
+    path('pronosARbBosq/',include('algorithms.pronosArbBos.urls')),
+    path('clasifiARbBosq/',include('algorithms.clasifArbBos.urls')),
 ]
 

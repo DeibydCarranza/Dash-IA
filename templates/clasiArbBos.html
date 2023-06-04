@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
     <head>       
-        <title>Clúster</title>
+        <title>Clasificación Arb/Bos</title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
         <link rel="stylesheet" href="{% static 'css/global.css' %}" />
         <link rel="stylesheet" href="{% static 'css/nav.css' %}" />
@@ -29,13 +29,13 @@
 
         <div class="content-container">
             <div>
-                <h1>Clúster</h1>
+                <h1>Clasificación por Árboles y Bosques</h1>
                 <p>Agregar introducción y cosas random</p>
             </div>
             {# Sección necesaria  por usar 'plotly_direct' -> header&footer #}
             {% plotly_header %}
-            <div class="{% plotly_class name='section_cluster' %} card" style="height: 100%; width: 100%">
-                {% plotly_direct name='section_cluster' %}
+            <div class="{% plotly_class name='section_clasifArbBosq' %} card" style="height: 100%; width: 100%">
+                {% plotly_direct name='section_clasifArbBosq' %}
             </div>
             {% plotly_footer %}
         </div>
