@@ -4,28 +4,22 @@ import base64
 import pandas as pd
 import os
 from .. import components as comp
+import yfinance as yf
+from . import layout as lay
 
-""" Save data on file, generete dataframe and return dash_tabe """
-def parse_contents(contents, filename,path_file):
-    _, content_string = contents.split(',')
-    decoded = base64.b64decode(content_string)
-    try:
-        if 'csv' in filename:
-            # writin on file
-            write_on_file(decoded,path_file)        
-            print(path_file)
-            # generating dataframe
-            df = pd.read_csv(path_file) 
-            # Generate html component
-            render = render_results(df)
-            return render
-    except Exception as e:
-        print(e)
-        return html.Div([
-            'Archivo erroneo, solo archivos .csv'
-        ])
 
-    return render
+
+""" Generando el historial en rango de fechas """
+def table_historial(ticker):
+    df = yf.Ticker(str(ticker))
+
+    CompanyHist = df.history(start='2019-01-01', end='2023-05-25', interval='1d')
+    html.Div(id='output-container-date-picker-range'),
+    graph_figure= lay.render_prices(CompanyHist,ticker)
+    
+    
+    return graph_figure
+
 
 
 
@@ -45,8 +39,3 @@ def render_results(df):
         }
     )
     return res
-
-"""Create Pandas DataFrame from local CSV."""
-def write_on_file(decoded,path_file):
-    with open(path_file, 'w') as f:
-            f.write(decoded.decode("utf-8"))
