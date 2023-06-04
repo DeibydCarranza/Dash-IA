@@ -4,6 +4,7 @@ import plotly.graph_objects as go
 import numpy as np
 import dash_bootstrap_components as dbc
 import dash_daq as daq
+import dash_mantine_components as dmc
 
 
 """ Generate update component (just html) """
@@ -23,7 +24,10 @@ upload_component = html.Div([
               'borderRadius': '5px',
               'textAlign': 'center',
               'margin': '50px 10px'
-              'padding-bottom: 10%'
+              'padding-bottom: 10%',
+              'background-color':'#ff008d14',
+              'margin-bottom': '4rem',
+              'font-weight': '700',
        },
        # Permitir cargar múltiples archivos
        multiple=False
@@ -153,12 +157,7 @@ def mod_params_train(index):
             ], width=4),
             dbc.Col([
                 html.Label("Shuffle"),
-                daq.BooleanSwitch(id=f"boolean-switch_{index}", on=False, style={
-                     'marginRight': '10px', 
-                     'borderRadius': '20px', 
-                     'padding': '2px',
-                     'boxShadow': '0 0 3px rgba(0, 0, 0, 0.3)' 
-              })
+                dmc.Switch(id=f"boolean-switch_{index}",onLabel="True",offLabel="False",checked=True,size="xl", color="red")
             ], width=4)
         ], className="input-row")
     ], className="input-container")

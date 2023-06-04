@@ -5,8 +5,8 @@ import os
 from . import tool as tl 
 from django_plotly_dash import DjangoDash
 from . import method as met
-import pandas as pd
-import io
+import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 
 #  ---------- Iniciando aplicación ---------------
 app = DjangoDash('section_apriori')
@@ -82,9 +82,12 @@ def show_rules(df, input_val_1, input_val_2, input_val_3):
 
 """ Bloque de slider/Input, se considera sufijos para identificarlos """
 def block_params():
-    section_mod1 = mod_params_slide_input(0, 50, "-1")
-    section_mod2 = mod_params_slide_input(0, 80, "-2")
-    section_mod3 = mod_params_slide_input(0, 6, "-3")
+    texto1="Soporte"
+    texto2="Confianza"
+    texto3="Presentación"
+    section_mod1 = mod_params_slide_input(0, 50, "-1",texto1)
+    section_mod2 = mod_params_slide_input(0, 80, "-2",texto2)
+    section_mod3 = mod_params_slide_input(0, 6, "-3",texto3)
 
     layout = html.Div(
         children=[
@@ -92,19 +95,20 @@ def block_params():
             section_mod2,
             section_mod3,
             html.Div(id="output-container"),  # Contenedor para mostrar los valores
-            html.Button('Procesar', id='submit-val'),
+            dmc.Button('Procesar', id='submit-val',variant="gradient"),
         ],
         className='block-params-container'
     )
     return layout
 
 """ Componente dual Slider-Input. Los sufijos ayudan a no duplicarlos """
-def mod_params_slide_input(mini, maxi, suffix=""):
+def mod_params_slide_input(mini, maxi, suffix="",texto=""):
     input_id = "input-circular" + suffix
     slider_id = "slider-circular" + suffix
 
     section_mod = html.Div(
         children=[
+            dmc.Text(texto, weight=700),
             dcc.Slider(
                 id=slider_id,
                 min=mini,
@@ -168,6 +172,7 @@ def update_output(list_of_contents, list_of_names):
         render, df = tl.parse_contents(list_of_contents, list_of_names, path_file)
         children = [
             render,
+            html.H1("Sección de parámetros", style={'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
             section_patrams
         ]
         return children

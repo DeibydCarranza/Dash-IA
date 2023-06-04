@@ -5,6 +5,7 @@ import pandas as pd
 import os
 from .. import components as comp
 from . import method as met
+import dash_mantine_components as dmc
 
 """ Save data on file, generete dataframe and return dash_tabe """
 def parse_contents(contents, filename,path_file):
@@ -39,7 +40,9 @@ def render_results(df):
     # Create Layout
     res = html.Div(
         children=[
+            dmc.Text("Mostrando tabla de transacciones", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px'}),
             table,
+            dmc.Text("Gráfica de frecuencias para cada elemento", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
             dcc.Graph(id="graph-distribution", figure=grap_frec)
         ],
         className='render-container',

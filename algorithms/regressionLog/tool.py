@@ -5,6 +5,7 @@ import pandas as pd
 import os
 from .. import components as comp
 import dash_bootstrap_components as dbc
+import dash_mantine_components as dmc
 
 
 """ Save data on file, generete dataframe and return dash_tabe """
@@ -63,13 +64,13 @@ def render_results(df):
 
             comp.mod_params_train(1),
             
-            html.Button('Entrenar', id='btn-train', n_clicks=0),
+            dmc.Button('Entrenar', id='btn-train', n_clicks=0,variant="gradient"),
 
             html.Div("",style={'margin-bottom':'40px'}),
 
             #Sección para poder desplegar las gráficas de correlaciones
             html.Div([
-                html.Button("Apoyo para seleccionar columnas", id="toggle-button-1"),
+                dmc.Button("Apoyo para seleccionar columnas", id="toggle-button-1",variant="gradient"),
                 html.Div(id="acordeon-content-1")
             ]),
             
