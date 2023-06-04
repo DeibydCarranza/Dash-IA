@@ -20,7 +20,7 @@ Y_validation = None
 Y_ClasificacionRL = None
 TypeG = "Diabetes"
 
-# Variables predictoras y variables de clase
+""" Variables predictoras y variables de clase """
 def variablesClasePredict(df,columns_values,claseSalida,size,random_s,shuffle):
     global TypeG
     if claseSalida == 'Diagnosis':
@@ -35,7 +35,7 @@ def variablesClasePredict(df,columns_values,claseSalida,size,random_s,shuffle):
 
     score = entrenamiento(X,Y,size,random_s,shuffle)
 
-#Entrenamiendo del modelo
+""" Entrenamiendo del modelo """
 def entrenamiento(X,Y,size,random_s,shuffle):
     global ClasificacionRL,X_validation,Y_validation,Y_ClasificacionRL
 
@@ -54,8 +54,10 @@ def entrenamiento(X,Y,size,random_s,shuffle):
     Y_ClasificacionRL = ClasificacionRL.predict(X_validation)
 
 
-# Validación del modelo
-def modelValidation():
+
+""" Validación del modelo -> dash_app.py.
+Se necesitan las columnas seleccionadas para crear los inputs predictores"""
+def modelValidation(columns_values,app):
     global ClasificacionRL,X_validation,Y_validation,Y_ClasificacionRL
     ModeloClasificacion = ClasificacionRL.predict(X_validation)
     Matriz_Clasificacion = pd.crosstab(Y_validation.ravel(), 
@@ -69,7 +71,7 @@ def modelValidation():
 
 
     ## ------ Gráficas y Layout
-    layout = lay.section_graphs_interactive(exactitud,report,Matriz_Clasificacion,TypeG,X_validation,Y_validation,ClasificacionRL)
+    layout = lay.section_graphs_interactive(exactitud,report,Matriz_Clasificacion,TypeG,X_validation,Y_validation,ClasificacionRL,columns_values,app)
 
     return layout
 

@@ -48,7 +48,7 @@ def render_results(df):
         children=[
             table,
 
-            html.Div("Veamos qué pasa"),
+            html.Div("Ingresa al menos 2 características a evaluar"),
             html.Div([
                 dcc.Dropdown(
                     options=[{'label': col, 'value': col} for col in columnas],
