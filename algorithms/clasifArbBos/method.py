@@ -30,7 +30,7 @@ def variablesClasePredict(df,columns_values,claseSalida,size,random_s,shuffle):
     #Variable clase
     Y = np.array(df[claseSalida])
 
-    score = entrenamiento(X,Y,size,random_s,shuffle)
+    #score = entrenamiento(X,Y,size,random_s,shuffle)
 
 """ Entrenamiendo del modelo """
 def entrenamiento(X,Y,size,random_s,shuffle):
