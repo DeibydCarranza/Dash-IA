@@ -4,14 +4,19 @@ from .. import components
 import os
 from . import tool as tl
 from . import layout as lay
+from . import method as met
 from django_plotly_dash import DjangoDash
 
 app = DjangoDash('section_clasifArbBosq')
 path_file = os.path.join(os.path.dirname(__file__), '../data/file.csv')
 df = None
 df_filtered = None
-claseFiltrada = None
+columna_filtrada = None
 columns_values_global = [] 
+max_depth_glo= None
+min_samples_split_glo=None
+min_samples_leaf_glo=None
+random_state_glo=None
 
 # ------- Funciones -----------
 
@@ -36,11 +41,11 @@ app.layout = html.Div(
     State('upload-data', 'filename')
 )
 def update_output(list_of_contents, list_of_names):
-    global df, df_filtered,claseFiltrada
+    global df, df_filtered,columna_filtrada
     if list_of_contents is None:
         return html.Div('No se seleccionó ningún archivo.')
     else:
-        render, df, df_filtered, claseFiltrada = tl.parse_contents(list_of_contents, list_of_names, path_file)
+        render, df, df_filtered, columna_filtrada = tl.parse_contents(list_of_contents, list_of_names, path_file)
 
         children = [
             render
@@ -60,10 +65,10 @@ def update_output(list_of_contents, list_of_names):
 def update_output_columns(n_clicks, columns_values, size_train, random_state, shuffle, current_validation_layout):
     global columns_values_global
     columns_values_global = columns_values
-
+    
     # Si no se ha presionado "Entrenar" y no se han ingresado mínimo 2 columnas en dropdwon 
     if n_clicks is not None and columns_values is not None and len(columns_values) > 1:
-        print(size_train, random_state, shuffle)
+        met.variablesClasePredict(df,columns_values,columna_filtrada,size_train,random_state,shuffle)
         layout_models = lay.tab_for_methods()
         return f'Carga exitosa de entrenamiento', layout_models
 
@@ -95,6 +100,12 @@ def toggle_acordeon(n_clicks):
      State('input_random_state_0', 'value')]
 )
 def generate_input_values_tree(n_clicks, max_depth, min_samples_split, min_samples_leaf, random_state):
+    global max_depth_glo,min_samples_split_glo,min_samples_leaf_glo,random_state_glo
+    max_depth_glo=max_depth
+    min_samples_split_glo=min_samples_split
+    min_samples_leaf_glo=min_samples_leaf
+    random_state_glo=random_state
+    
     if n_clicks > 0:
         valuesTree = {
             'max_depth': max_depth,
@@ -102,7 +113,7 @@ def generate_input_values_tree(n_clicks, max_depth, min_samples_split, min_sampl
             'min_samples_leaf': min_samples_leaf,
             'random_state': random_state
         }
-        print(valuesTree)
+        # print(valuesTree)
         return valuesTree
     else:
         return ''
@@ -126,7 +137,7 @@ def generate_input_values_forest(n_clicks, max_depth, min_samples_split, min_sam
             'random_state': random_state,
             'n_estimators': n_estimators
         }
-        print(valuesForest)
+        #print(valuesForest)
         return valuesForest
     else:
         return ''

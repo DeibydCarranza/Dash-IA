@@ -19,8 +19,8 @@ def parse_contents(contents, filename,path_file):
             # generating dataframe
             df = pd.read_csv(path_file) 
             # Generate html component
-            render,df_filtered,claseFiltrada = render_results(df)
-            return render, df, df_filtered,claseFiltrada
+            render,df_filtered,columna_filtrada = render_results(df)
+            return render, df, df_filtered,columna_filtrada
     except Exception as e:
         print(e)
         return html.Div([

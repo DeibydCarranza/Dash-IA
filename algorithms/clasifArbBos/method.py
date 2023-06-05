@@ -3,31 +3,28 @@ import plotly.express as px
 import plotly.graph_objects as go
 from dash import dcc, html,dash_table
 from . import layout as lay
-
-import numpy as np 
-from sklearn import model_selection
-from sklearn import linear_model
-from sklearn.metrics import classification_report
-from sklearn.metrics import roc_curve
-from sklearn.metrics import RocCurveDisplay
-from sklearn.metrics import accuracy_score  
 import dash_bootstrap_components as dbc
+import numpy as np 
+
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score
+from sklearn import model_selection
+
 
 
 ClasificacionRL = None
 X_validation= None
 Y_validation = None
 Y_ClasificacionRL = None
-TypeG = "Diabetes"
+TypeG = ""
 
 """ Variables predictoras y variables de clase """
 def variablesClasePredict(df,columns_values,claseSalida,size,random_s,shuffle):
-    global TypeG
-    if claseSalida == 'Diagnosis':
-        df = df.replace({'M': 0, 'B': 1})
-        TypeG = 'Cáncer'
-
-    #Variables predictoras
+    print("------------------------------------------------------")
+    # Variables predictoras
     X = np.array(df[columns_values])
 
     #Variable clase
@@ -57,7 +54,7 @@ def entrenamiento(X,Y,size,random_s,shuffle):
 
 """ Validación del modelo -> dash_app.py.
 Se necesitan las columnas seleccionadas para crear los inputs predictores"""
-def modelValidation(columns_values,app):
+def modelValidation(columns_values):
     global ClasificacionRL,X_validation,Y_validation,Y_ClasificacionRL
     ModeloClasificacion = ClasificacionRL.predict(X_validation)
     Matriz_Clasificacion = pd.crosstab(Y_validation.ravel(), 
