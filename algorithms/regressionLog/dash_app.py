@@ -56,7 +56,7 @@ def update_output(list_of_contents, list_of_names):
     [State('columns-dropdown-1', 'value'),
      State('input_size_train_1', 'value'),
      State('input_random_state_1', 'value'),
-     State('boolean-switch_1', 'on'),
+     State('boolean-switch_1', 'checked'),
      State('model-validation-layout', 'children')]
 )
 def update_output_columns(n_clicks, columns_values, size_train, random_state, shuffle, current_validation_layout):

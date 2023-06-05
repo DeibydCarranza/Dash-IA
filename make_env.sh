@@ -30,6 +30,7 @@ source venv/bin/activate
 #
 pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
+pip install urllib3
 ./manage.py migrate
 #
 python manage.py runserver

@@ -163,3 +163,55 @@ def mod_params_train(index):
     ], className="input-container")
 
     return layout
+
+
+""" Input de size_train, random_state, shuffle"""
+""" Index->unique for ID, type_algorithm->to create or not 1 input extra for  Forest"""
+def params_tree_fores(index,type_algorithm):
+    layout = dbc.Container([
+        html.Div("Al dejarlos vacíos trabajarás con valores por defecto"),
+        dbc.Row([
+            dbc.Col([
+                html.Label("Profundidad del árbol"),
+                dcc.Input(
+                    id=f"input_max_depth_{index}",
+                    type="number", placeholder="max_depth",className="input-field",
+                    min=1,step=1,value=None,           
+              )], width=3),
+            dbc.Col([
+                html.Label("Mínimo de divisiones "),
+                dcc.Input(
+                    id=f"input_min_samples_split_{index}",
+                    type="number", placeholder="min_samples_split",className="input-field",
+                    min=2,step=1,value=2,           
+              )], width=3),
+            dbc.Col([
+                html.Label("Hojas permitidas como muestras"),
+                dcc.Input(
+                    id=f"input_min_samples_leaf_{index}",
+                    type="number", placeholder="min_samples_leaf",className="input-field",
+                    min=1,step=1,value=1,           
+              )], width=3),
+            dbc.Col([
+                html.Label("Número de aleatoriedad"),
+                dcc.Input(
+                    id=f"input_random_state_{index}",
+                    type="number", placeholder="random_state",className="input-field",
+                    min=0,step=1,value=None,           
+              )], width=3),          
+        ], className="input-row")
+    ], className="input-container")
+
+    if type_algorithm:
+        layout.children[1].children.append(
+            dbc.Col([
+                html.Label("Número de estimadores"),
+                dcc.Input(
+                    id=f"input_n_estimators_{index}",
+                    type="number",placeholder="n_estimators",className="input-field",
+                    min=1,step=1, value=100,
+                )
+            ], width=3)
+        )
+
+    return layout
