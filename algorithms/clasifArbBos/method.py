@@ -13,42 +13,61 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 from sklearn import model_selection
 
-
-
-ClasificacionRL = None
-X_validation= None
-Y_validation = None
-Y_ClasificacionRL = None
-TypeG = ""
+# max_depth_glo = None
+# min_samples_split_glo=None
+# min_samples_leaf_glo=None
+# random_state_glo=None
+# n_estimators_glo=None
 
 """ Variables predictoras y variables de clase """
 def variablesClasePredict(df,columns_values,claseSalida,size,random_s,shuffle):
-    print("------------------------------------------------------")
     # Variables predictoras
     X = np.array(df[columns_values])
 
     #Variable clase
     Y = np.array(df[claseSalida])
 
-    #score = entrenamiento(X,Y,size,random_s,shuffle)
+    #Entrenando el modelo
+    X_t, X_val, Y_t, Y_val = modelCreation(X,Y,size,random_s,shuffle)
 
-""" Entrenamiendo del modelo """
-def entrenamiento(X,Y,size,random_s,shuffle):
-    global ClasificacionRL,X_validation,Y_validation,Y_ClasificacionRL
+    return X_t, X_val, Y_t, Y_val
+
+""" Creacion del modelo """
+def modelCreation(X,Y,size,random_s,shuffle):
 
     X_train, X_validation, Y_train, Y_validation = model_selection.train_test_split(X, Y, 
                                                                 test_size = size, 
                                                                 random_state = random_s,
                                                                 shuffle = shuffle)
+    return X_train, X_validation, Y_train, Y_validation
+    # MODELADO DE ÁRBOLES
+    #trainingTrees(columns_values,X_train, Y_train)
+
+
+"""  ---  ENTRENAMIENTOS --- """
+""" Entrenamiento de árbol """
+def trainingTrees(columns_values, X_train, X_validation, Y_train, Y_validation, depth,samples_split,samples_leaf,random_s):
+    
     #Se entrena el modelo a partir de los datos de entrada
-    ClasificacionRL = linear_model.LogisticRegression()
-    ClasificacionRL.fit(X_train, Y_train)
+    ClasificacionAD = DecisionTreeClassifier(max_depth = depth, min_samples_split = samples_split, 
+                                             min_samples_leaf = samples_leaf, random_state = random_s)
+    ClasificacionAD.fit(X_train, Y_train)
 
-    #Predicciones probabilísticas de los datos de prueba
-    Probabilidad = ClasificacionRL.predict_proba(X_validation)
+    #Se etiquetan las clasificaciones
+    Y_ClasificacionAD = ClasificacionAD.predict(X_validation)
+    ValoresAD = pd.DataFrame(Y_validation, Y_ClasificacionAD)
 
-    #Clasificación final 
-    Y_ClasificacionRL = ClasificacionRL.predict(X_validation)
+    #Se calcula la exactitud promedio de la validación
+    ClasificacionAD.score(X_validation, Y_validation)
+
+    #modelValidation(columns_values)
+
+    print("+++++++++++++++++++++++++++++++")
+    print(ClasificacionAD,Y_ClasificacionAD)
+
+
+
+
 
 
 
@@ -68,9 +87,25 @@ def modelValidation(columns_values):
 
 
     ## ------ Gráficas y Layout
-    layout = lay.section_graphs_interactive(exactitud,report,Matriz_Clasificacion,TypeG,X_validation,Y_validation,ClasificacionRL,columns_values,app)
+    layout = lay.section_graphs_interactive(exactitud,report,Matriz_Clasificacion,TypeG,X_validation,Y_validation,ClasificacionRL,columns_values)
 
     return layout
 
 
+# """ Extrayendo valores desde callback para ser usados desde method.py """
+# def setterParamsTree(X_t, X_val, Y_t, Y_val,max_depth,min_samples_split,min_samples_leaf,random_state):
+#     global max_depth_glo, min_samples_split_glo, min_samples_leaf_glo, random_state_glo
+    
+#     max_depth_glo = max_depth
+#     min_samples_split_glo = min_samples_split
+#     min_samples_leaf_glo = min_samples_leaf
+#     random_state_glo = random_state
 
+# def setterParamsForest(max_depth,min_samples_split,min_samples_leaf,random_state,n_estimators):
+#     global max_depth_glo, min_samples_split_glo, min_samples_leaf_glo, random_state_glo, n_estimators_glo
+    
+#     max_depth_glo = max_depth
+#     min_samples_split_glo = min_samples_split
+#     min_samples_leaf_glo = min_samples_leaf
+#     random_state_glo = random_state
+#     n_estimators_glo = n_estimators

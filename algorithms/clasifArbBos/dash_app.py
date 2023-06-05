@@ -13,11 +13,11 @@ df = None
 df_filtered = None
 columna_filtrada = None
 columns_values_global = [] 
-max_depth_glo= None
-min_samples_split_glo=None
-min_samples_leaf_glo=None
-random_state_glo=None
 
+X_t = None
+X_val = None
+Y_t = None
+Y_val = None
 # ------- Funciones -----------
 
 
@@ -63,12 +63,12 @@ def update_output(list_of_contents, list_of_names):
      State('model-validation-layout', 'children')]
 )
 def update_output_columns(n_clicks, columns_values, size_train, random_state, shuffle, current_validation_layout):
-    global columns_values_global
+    global columns_values_global, X_t, X_val, Y_t, Y_val
     columns_values_global = columns_values
     
     # Si no se ha presionado "Entrenar" y no se han ingresado mínimo 2 columnas en dropdwon 
     if n_clicks is not None and columns_values is not None and len(columns_values) > 1:
-        met.variablesClasePredict(df,columns_values,columna_filtrada,size_train,random_state,shuffle)
+        X_t, X_val, Y_t, Y_val = met.variablesClasePredict(df,columns_values,columna_filtrada,size_train,random_state,shuffle)
         layout_models = lay.tab_for_methods()
         return f'Carga exitosa de entrenamiento', layout_models
 
@@ -99,13 +99,8 @@ def toggle_acordeon(n_clicks):
      State('input_min_samples_leaf_0', 'value'),
      State('input_random_state_0', 'value')]
 )
-def generate_input_values_tree(n_clicks, max_depth, min_samples_split, min_samples_leaf, random_state):
-    global max_depth_glo,min_samples_split_glo,min_samples_leaf_glo,random_state_glo
-    max_depth_glo=max_depth
-    min_samples_split_glo=min_samples_split
-    min_samples_leaf_glo=min_samples_leaf
-    random_state_glo=random_state
-    
+def generate_input_values_tree(n_clicks, max_depth, min_samples_split, min_samples_leaf, random_state):  
+    global X_t, X_val, Y_t, Y_val 
     if n_clicks > 0:
         valuesTree = {
             'max_depth': max_depth,
@@ -113,8 +108,7 @@ def generate_input_values_tree(n_clicks, max_depth, min_samples_split, min_sampl
             'min_samples_leaf': min_samples_leaf,
             'random_state': random_state
         }
-        # print(valuesTree)
-        return valuesTree
+        met.trainingTrees(columns_values_global,X_t, X_val, Y_t, Y_val, max_depth,min_samples_split,min_samples_leaf,random_state)
     else:
         return ''
 
@@ -137,7 +131,7 @@ def generate_input_values_forest(n_clicks, max_depth, min_samples_split, min_sam
             'random_state': random_state,
             'n_estimators': n_estimators
         }
-        #print(valuesForest)
+        met.getterParamsTree(max_depth,min_samples_split,min_samples_leaf,random_state,n_estimators)
         return valuesForest
     else:
         return ''
