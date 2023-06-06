@@ -166,7 +166,7 @@ def mod_params_train(index):
 
 
 """ Input de size_train, random_state, shuffle"""
-""" Index->unique for ID, type_algorithm->to create or not 1 input extra for  Forest"""
+""" Index->unique for ID, type_algorithm->to create or not 1 input extra for  'ForestDesicion'"""
 def params_tree_fores(index,type_algorithm):
     layout = dbc.Container([
         html.Div("Al dejarlos vacíos trabajarás con valores por defecto"),

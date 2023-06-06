@@ -68,7 +68,7 @@ def update_output_columns(n_clicks, columns_values, size_train, random_state, sh
     
     # Si no se ha presionado "Entrenar" y no se han ingresado mínimo 2 columnas en dropdwon 
     if n_clicks is not None and columns_values is not None and len(columns_values) > 1:
-        X_t, X_val, Y_t, Y_val = met.variablesClasePredict(df,columns_values,columna_filtrada,size_train,random_state,shuffle)
+        X_t, X_val, Y_t, Y_val = met.variablesClasePredict(df,columns_values,columna_filtrada,(size_train/100),random_state,shuffle)
         layout_models = lay.tab_for_methods()
         return f'Carga exitosa de entrenamiento', layout_models
 

@@ -40,14 +40,21 @@ def modelCreation(X,Y,size,random_s,shuffle):
                                                                 random_state = random_s,
                                                                 shuffle = shuffle)
     return X_train, X_validation, Y_train, Y_validation
-    # MODELADO DE ÁRBOLES
-    #trainingTrees(columns_values,X_train, Y_train)
 
 
-"""  ---  ENTRENAMIENTOS --- """
+"""  ---  MODELADO DE ÁRBOLES --- """
 """ Entrenamiento de árbol """
 def trainingTrees(columns_values, X_train, X_validation, Y_train, Y_validation, depth,samples_split,samples_leaf,random_s):
-    
+        # Validar y asignar los valores por defecto si los argumentos son None
+    print(depth,samples_split,samples_leaf,random_s)
+    if samples_split is None:
+        samples_split = 2
+    if samples_leaf is None:
+        samples_leaf = 1
+    # if random_s is None:
+    #     random_s = 0
+    print("----------")
+    print(depth,samples_split,samples_leaf,random_s)
     #Se entrena el modelo a partir de los datos de entrada
     ClasificacionAD = DecisionTreeClassifier(max_depth = depth, min_samples_split = samples_split, 
                                              min_samples_leaf = samples_leaf, random_state = random_s)
@@ -58,12 +65,14 @@ def trainingTrees(columns_values, X_train, X_validation, Y_train, Y_validation, 
     ValoresAD = pd.DataFrame(Y_validation, Y_ClasificacionAD)
 
     #Se calcula la exactitud promedio de la validación
-    ClasificacionAD.score(X_validation, Y_validation)
+    score = ClasificacionAD.score(X_validation, Y_validation)
 
     #modelValidation(columns_values)
 
     print("+++++++++++++++++++++++++++++++")
-    print(ClasificacionAD,Y_ClasificacionAD)
+    print(score)
+    print(Y_ClasificacionAD)
+    print(ClasificacionAD.fit(X_train, Y_train))
 
 
 
