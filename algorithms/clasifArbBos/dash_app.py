@@ -108,7 +108,7 @@ def generate_input_values_tree(n_clicks, max_depth, min_samples_split, min_sampl
             'min_samples_leaf': min_samples_leaf,
             'random_state': random_state
         }
-        met.trainingTrees(columns_values_global,X_t, X_val, Y_t, Y_val, max_depth,min_samples_split,min_samples_leaf,random_state)
+        met.trainingTrees(columns_values_global, X_t, X_val, Y_t, Y_val, max_depth, min_samples_split, min_samples_leaf, random_state, columna_filtrada)
     else:
         return ''
 
@@ -131,7 +131,7 @@ def generate_input_values_forest(n_clicks, max_depth, min_samples_split, min_sam
             'random_state': random_state,
             'n_estimators': n_estimators
         }
-        met.getterParamsTree(max_depth,min_samples_split,min_samples_leaf,random_state,n_estimators)
+        met.trainingForest(columns_values_global,X_t, X_val, Y_t, Y_val, max_depth,min_samples_split,min_samples_leaf,random_state ,n_estimators, columna_filtrada)
         return valuesForest
     else:
         return ''
