@@ -81,12 +81,14 @@ def section_graphs_interactive(exactitud,report,Matriz_Clasificacion,Y_Clasi,X_v
     acordeon = accordionMatrixScoreGraphs(table, exactitud, Grid_layout,tree_layout)
 
     # Mostrador de predicción
-    #prediction_lay = accordion_diagnostic(columns_values)
+    prediction_lay = accordion_diagnostic(columns_values)
 
     # Layoput principal que será devuelto
     layout = html.Div([
         acordeon,
-        #prediction_lay
+        html.Div(id="cmp-rendimientos-rocs"),
+
+        prediction_lay
     ])
 
     return layout
@@ -183,4 +185,77 @@ def accordionMatrixScoreGraphs(table, exactitud, Grid_layout, tree_layout):
     )
     return acordeon
 
+""" Sección tipo acordeon que muestra la predicción a los pacientes """
+def accordion_diagnostic(columns_values,):
+    obj_description = [
+        {
+            "id": "salud",
+            "image": "https://img.freepik.com/vector-premium/pronostico-comercial-prediccion-mercado-valores-inversion-o-superpoder-ver-futuro-adivino-ver-concepto-oportunidad-mano-hombre-negocios-poder-magico-ver-pronostico-bola-magica-cristal_212586-1252.jpg",
+            "label": "Pronóstico por medio de IA",
+            "description": "Clasificación con base a los datos recopilados",
+        },
+    ]
 
+    def create_accordion_label(label, image, description):
+        return dmc.AccordionControl(
+            dmc.Group(
+                [
+                    dmc.Avatar(src=image, radius="xl", size="lg"),
+                    html.Div(
+                        [
+                            dmc.Text(label),
+                            dmc.Text(description, size="sm", weight=400, color="dimmed"),
+                        ]
+                    ),
+                ]
+            )
+        )
+
+    def create_accordion_content(content):
+        return dmc.AccordionPanel(content)
+
+    accordion = dmc.Accordion(
+        chevronPosition="right",
+        variant="contained",
+        children=[
+            dmc.AccordionItem(
+                [
+                    create_accordion_label(
+                        obj_description[0]["label"], obj_description[0]["image"], obj_description[0]["description"]
+                    ),
+                    create_accordion_content(
+                            pronostico(columns_values)
+                    ),   
+                ],
+                value=obj_description[0]["id"],
+            )
+        ],
+    )
+
+    return accordion
+
+def pronostico(columns_values):
+    layout = html.Div(children=[])
+    input_elements = []
+
+    for column in columns_values:
+        input_element = dcc.Input(
+            type="number",
+            placeholder="Ingrese un valor",
+            id="input-prono-{}".format(column),
+            required=True,
+            min="0"
+        )
+        input_elements.append(html.Div([
+            html.Label(column),
+            input_element
+        ]))
+    layout.children = input_elements
+
+    submit_button = html.Button("Enviar", id="submit-button", n_clicks=0)
+    layout.children.append(submit_button)
+    layout.children.append(html.Div(id="output-container-prono"))
+
+    # ------------Sección donde se muestran los resultados
+
+    return layout
