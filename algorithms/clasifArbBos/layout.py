@@ -5,10 +5,7 @@ from .. import components as comp
 import plotly.graph_objects as go
 from dash import dcc, html,dash_table
 
-
 import dash_bootstrap_components as dbc
-import dash_mantine_components as dmc
-
 
 """ Vista en 2 pestañas de los métodos presentes """
 def tab_for_methods():
@@ -105,13 +102,15 @@ def typeGraphTree(isForest, Clasificacion, columns_values, Y_Clasi):
                 min=1,step=1,value=None,           
             ),
             dmc.Button('Generar Bosque', id='btn-n-estimators', n_clicks=0,variant="gradient"),
-            html.Div(id="output-div-estimator"),
-            html.Div(id="tree-image-forest")
+
+            html.Div(id="tree-image-forest"),
         ])
     else:
         tree = comp.plotTree(Clasificacion,columns_values,Y_Clasi)
         tree_layout = html.Div([
-            html.Img(src='data:image/png;base64,{}'.format(tree), style={'width': '100%', 'height': 'auto'})
+            html.Img(src='data:image/png;base64,{}'.format(tree), style={'width': '100%', 'height': 'auto'}),
+            dmc.Button("Generar Reporte", id="btn-descarga-arbol",variant="gradient"),
+            dcc.Download(id="download-reporte-arbol")
         ])
     return tree_layout
 

@@ -67,7 +67,7 @@ def trainingTrees(columns_values, X_train, X_validation, Y_train, Y_validation, 
     layout = modelValidation(columns_values, ClasificacionAD, X_validation, Y_validation,Y_ClasificacionAD,isForest)
 
     print("\nCLASIFICACIÓN Arboles")
-    return layout
+    return layout, ClasificacionAD
 
 """ Entrenamiento de bosque """
 def trainingForest(columns_values, X_train, X_validation, Y_train, Y_validation, depth,samples_split,samples_leaf,random_s,estimators):

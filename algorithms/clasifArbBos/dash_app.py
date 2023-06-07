@@ -6,6 +6,9 @@ from . import tool as tl
 from . import layout as lay
 from . import method as met
 from django_plotly_dash import DjangoDash
+import dash_mantine_components as dmc
+from sklearn.tree import export_text
+
 
 app = DjangoDash('section_clasifArbBosq')
 path_file = os.path.join(os.path.dirname(__file__), '../data/file.csv')
@@ -22,6 +25,8 @@ Y_val = None
 n_estimators_glo = None
 ClasiBA = None
 Y_ClasiBA = None
+clasifiAD = None
+choose_Estimator_glo = None
 # ------- Funciones -----------
 
 
@@ -107,9 +112,9 @@ def toggle_acordeon(n_clicks):
      State('input_random_state_0', 'value')]
 )
 def generate_input_values_tree(n_clicks, max_depth, min_samples_split, min_samples_leaf, random_state):  
-    global X_t, X_val, Y_t, Y_val 
+    global X_t, X_val, Y_t, Y_val, clasifiAD
     if n_clicks > 0:
-        res_layoutAD = met.trainingTrees(columns_values_global, X_t, X_val, Y_t, Y_val, max_depth, min_samples_split, min_samples_leaf, random_state)
+        res_layoutAD, clasifiAD = met.trainingTrees(columns_values_global, X_t, X_val, Y_t, Y_val, max_depth, min_samples_split, min_samples_leaf, random_state)
         return [
             res_layoutAD
         ]
@@ -139,19 +144,52 @@ def generate_input_values_forest(n_clicks, max_depth, min_samples_split, min_sam
 
 
 # Estableciendo núm estimadores para el bosque 
-@app.callback(Output('output-div-estimator', 'children'),
+@app.callback(Output('tree-image-forest', 'children'),
               [Input('btn-n-estimators', 'n_clicks')],
               [State('input_n_estimators', 'value')])
-def update_output(n_clicks, choose_Estimator):
-    global n_estimators_glo, ClasiBA, Y_ClasiBA
+def update_output_bosque(n_clicks, choose_Estimator):
+    global n_estimators_glo, ClasiBA, Y_ClasiBA,choose_Estimator_glo
     if n_clicks > 0:
         # Validar el rango del valor del Input
         if choose_Estimator is not None and 0 < choose_Estimator < n_estimators_glo:
+            choose_Estimator_glo = choose_Estimator
             Estimador = ClasiBA.estimators_[choose_Estimator]
             tree = components.plotTree(Estimador,columns_values_global,Y_ClasiBA)
-                
-            return html.Img(src='data:image/png;base64,{}'.format(tree), style={'width': '100%', 'height': 'auto'})
+
+            layout = html.Div([
+                html.Img(src='data:image/png;base64,{}'.format(tree), style={'width': '100%', 'height': 'auto'}),
+                dmc.Button("Generar Reporte", id="btn-descarga-bosque",variant="gradient"),
+                dcc.Download(id="download-reporte-bosque")
+            ]),
+            return layout
         else:
             return f"El valor debe ser mayor a 0 y menor a {n_estimators_glo}."
     else:
         return None
+
+
+
+@app.callback(
+    Output("download-reporte-bosque", "data"),
+    [Input("btn-descarga-bosque", "n_clicks")],
+    prevent_initial_call=True
+)
+def descargar_reporte_bosque(n_clicks):
+    global choose_Estimator_glo, ClasiBA
+    Estimador = ClasiBA.estimators_[choose_Estimator_glo]
+    contenido = export_text(Estimador,feature_names =columns_values_global)
+    return dict(content=contenido, filename="reporteBosque.txt")
+
+
+@app.callback(
+    Output("download-reporte-arbol", "data"),
+    [Input("btn-descarga-arbol", "n_clicks")],
+    prevent_initial_call=True
+)
+def descargar_reporte_arbol(n_clicks):
+    global clasifiAD
+    contenido = export_text(clasifiAD,feature_names =columns_values_global)
+    return dict(content=contenido, filename="reporteArbol.txt")
+
+
+
