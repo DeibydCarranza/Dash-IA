@@ -13,6 +13,7 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 from sklearn import model_selection
 
+isForest = None
 
 """ Variables predictoras y variables de clase """
 def variablesClasePredict(df,columns_values,claseSalida,size,random_s,shuffle):
@@ -43,8 +44,10 @@ def modelCreation(X,Y,size,random_s,shuffle):
 
 """  ---  MODELADO DE ALGORITMOS --- """
 """ Entrenamiento de árbol """
-def trainingTrees(columns_values, X_train, X_validation, Y_train, Y_validation, depth,samples_split,samples_leaf,random_s, claseSalida):
-    
+def trainingTrees(columns_values, X_train, X_validation, Y_train, Y_validation, depth,samples_split,samples_leaf,random_s):
+    global isForest
+    isForest = False
+
     # Establecer valores por defecto si son None
     print(depth,samples_split,samples_leaf,random_s)
     if samples_split is None:
@@ -61,14 +64,16 @@ def trainingTrees(columns_values, X_train, X_validation, Y_train, Y_validation, 
     Y_ClasificacionAD = ClasificacionAD.predict(X_validation)
     ValoresAD = pd.DataFrame(Y_validation, Y_ClasificacionAD)
 
-    layout = modelValidation(columns_values, ClasificacionAD, X_validation, Y_validation,Y_ClasificacionAD, claseSalida)
+    layout = modelValidation(columns_values, ClasificacionAD, X_validation, Y_validation,Y_ClasificacionAD,isForest)
 
     print("\nCLASIFICACIÓN Arboles")
     return layout
 
 """ Entrenamiento de bosque """
-def trainingForest(columns_values, X_train, X_validation, Y_train, Y_validation, depth,samples_split,samples_leaf,random_s,estimators, claseSalida):
-    
+def trainingForest(columns_values, X_train, X_validation, Y_train, Y_validation, depth,samples_split,samples_leaf,random_s,estimators):
+    global isForest
+    isForest = True
+
     # Establecer valores por defecto si son None
     print(depth,samples_split,samples_leaf,random_s)
     if samples_split is None:
@@ -87,16 +92,16 @@ def trainingForest(columns_values, X_train, X_validation, Y_train, Y_validation,
     Y_ClasificacionBA = ClasificacionBA.predict(X_validation)
     ValoresBA = pd.DataFrame(Y_validation, Y_ClasificacionBA)
 
-    layout = modelValidation(columns_values, ClasificacionBA, X_validation, Y_validation,Y_ClasificacionBA, claseSalida)
+    layout = modelValidation(columns_values, ClasificacionBA, X_validation, Y_validation,Y_ClasificacionBA,isForest)
 
     print("\nCLASIFICACIÓN BOSQUE")
-    return layout
+    return layout, ClasificacionBA,Y_ClasificacionBA
 
 
-""" VALIDACIÓN DEL MODELO -> dash_app.py.
+""" VALIDACIÓN DEL MODELO 
 Se necesitan las columnas seleccionadas para crear los inputs predictores"""
-def modelValidation(columns_values, Clasificacion,X_validation,Y_validation, Y_Clasificacion, claseSalida):
-    #global ClasificacionRL,X_validation,Y_validation,Y_ClasificacionRL
+def modelValidation(columns_values, Clasificacion,X_validation,Y_validation, Y_Clasificacion,isForest):
+
     ModeloClasificacion = Clasificacion.predict(X_validation)
     Matriz_Clasificacion = pd.crosstab(Y_validation.ravel(), 
                                    ModeloClasificacion, 
@@ -111,6 +116,7 @@ def modelValidation(columns_values, Clasificacion,X_validation,Y_validation, Y_C
     print(exactitud)
     print(report)
     ## ------ Gráficas y Layout
-    layout = lay.section_graphs_interactive(exactitud, report, Matriz_Clasificacion, claseSalida, X_validation, Y_validation, Clasificacion, columns_values)
+    layout = lay.section_graphs_interactive(exactitud, report, Matriz_Clasificacion, 
+                                            Y_Clasificacion, X_validation, Y_validation, Clasificacion, columns_values,isForest)
 
     return layout

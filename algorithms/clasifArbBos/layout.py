@@ -9,6 +9,7 @@ from dash import dcc, html,dash_table
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 
+
 """ Vista en 2 pestañas de los métodos presentes """
 def tab_for_methods():
 
@@ -36,7 +37,7 @@ def tab_for_methods():
 
 
 """ Sección donde se renderizan las tablas, gráficas y componentes propios del algoritmo ->method.py"""
-def section_graphs_interactive(exactitud,report,Matriz_Clasificacion,TypeG,X_val,Y_val,Clasificacion,columns_values):
+def section_graphs_interactive(exactitud,report,Matriz_Clasificacion,Y_Clasi,X_val,Y_val,Clasificacion,columns_values, isForest):
 
     print(Matriz_Clasificacion)
     num_filas, num_columnas = Matriz_Clasificacion.shape
@@ -64,11 +65,11 @@ def section_graphs_interactive(exactitud,report,Matriz_Clasificacion,TypeG,X_val
             [
                 dbc.Col(
                     classification_report_div,
-                    width=6  # Ancho
+                    width=6
                 ),
                 dbc.Col(
                     dcc.Graph(figure=roc_curve_fig),
-                    width=6  # Ancho
+                    width=6
                 )
             ],
             justify="center"
@@ -76,8 +77,11 @@ def section_graphs_interactive(exactitud,report,Matriz_Clasificacion,TypeG,X_val
         fluid=True  # Establecer el ancho completo del grid
     )
 
+    # ---- Impresión del árbol. Si es un bosque, requiere #estimadores
+    tree_layout = typeGraphTree(isForest, Clasificacion,columns_values,Y_Clasi)
+
     # ---- Acordeon que engloba lo anterior
-    acordeon = accordionMatrixScoreGraphs(table, exactitud, Grid_layout)
+    acordeon = accordionMatrixScoreGraphs(table, exactitud, Grid_layout,tree_layout)
 
     # Mostrador de predicción
     #prediction_lay = accordion_diagnostic(columns_values)
@@ -90,13 +94,35 @@ def section_graphs_interactive(exactitud,report,Matriz_Clasificacion,TypeG,X_val
 
     return layout
 
+
+""" Condicionando la gráfica de árbol al tipo de clasificación"""
+def typeGraphTree(isForest, Clasificacion, columns_values, Y_Clasi):
+    if isForest:
+        tree_layout = html.Div([
+            dcc.Input(
+                id=f"input_n_estimators",
+                type="number", placeholder="n_estimators",className="input-field",
+                min=1,step=1,value=None,           
+            ),
+            dmc.Button('Generar Bosque', id='btn-n-estimators', n_clicks=0,variant="gradient"),
+            html.Div(id="output-div-estimator"),
+            html.Div(id="tree-image-forest")
+        ])
+    else:
+        tree = comp.plotTree(Clasificacion,columns_values,Y_Clasi)
+        tree_layout = html.Div([
+            html.Img(src='data:image/png;base64,{}'.format(tree), style={'width': '100%', 'height': 'auto'})
+        ])
+    return tree_layout
+
+
+
 """ Acordeon desplegable con elementos individuales """
-def accordionMatrixScoreGraphs(table, exactitud, Grid_layout):
+def accordionMatrixScoreGraphs(table, exactitud, Grid_layout, tree_layout):
     acordeon = dmc.Accordion(
         value="flexibility",
         children=[
             dmc.AccordionItem([
-                    
                     dmc.AccordionControl("Matriz de clasificación"),
                     dmc.AccordionPanel(
                         dmc.Group([
@@ -122,7 +148,7 @@ def accordionMatrixScoreGraphs(table, exactitud, Grid_layout):
                     dmc.AccordionControl("Graficando árbol y reporte"),
                     dmc.AccordionPanel(
                         dmc.Group([
-                            ## Graficando arbol y reporte
+                            tree_layout
                         ])
                     ),
                 ],

@@ -18,6 +18,10 @@ X_t = None
 X_val = None
 Y_t = None
 Y_val = None
+
+n_estimators_glo = None
+ClasiBA = None
+Y_ClasiBA = None
 # ------- Funciones -----------
 
 
@@ -105,13 +109,7 @@ def toggle_acordeon(n_clicks):
 def generate_input_values_tree(n_clicks, max_depth, min_samples_split, min_samples_leaf, random_state):  
     global X_t, X_val, Y_t, Y_val 
     if n_clicks > 0:
-        valuesTree = {
-            'max_depth': max_depth,
-            'min_samples_split': min_samples_split,
-            'min_samples_leaf': min_samples_leaf,
-            'random_state': random_state
-        }
-        res_layoutAD = met.trainingTrees(columns_values_global, X_t, X_val, Y_t, Y_val, max_depth, min_samples_split, min_samples_leaf, random_state, columna_filtrada)
+        res_layoutAD = met.trainingTrees(columns_values_global, X_t, X_val, Y_t, Y_val, max_depth, min_samples_split, min_samples_leaf, random_state)
         return [
             res_layoutAD
         ]
@@ -129,17 +127,31 @@ def generate_input_values_tree(n_clicks, max_depth, min_samples_split, min_sampl
      State('input_n_estimators_1', 'value')]
 )
 def generate_input_values_forest(n_clicks, max_depth, min_samples_split, min_samples_leaf, random_state, n_estimators):
+    global n_estimators_glo, ClasiBA, Y_ClasiBA
+    n_estimators_glo = n_estimators
     if n_clicks > 0:
-        valuesForest = {
-            'max_depth': max_depth,
-            'min_samples_split': min_samples_split,
-            'min_samples_leaf': min_samples_leaf,
-            'random_state': random_state,
-            'n_estimators': n_estimators
-        }
-        res_layoutBA = met.trainingForest(columns_values_global,X_t, X_val, Y_t, Y_val, max_depth,min_samples_split,min_samples_leaf,random_state ,n_estimators, columna_filtrada)
+        res_layoutBA, ClasiBA, Y_ClasiBA = met.trainingForest(columns_values_global,X_t, X_val, Y_t, Y_val, max_depth,min_samples_split,min_samples_leaf,random_state ,n_estimators)
         return [
             res_layoutBA
         ]
     else:
         return []
+
+
+# Estableciendo núm estimadores para el bosque 
+@app.callback(Output('output-div-estimator', 'children'),
+              [Input('btn-n-estimators', 'n_clicks')],
+              [State('input_n_estimators', 'value')])
+def update_output(n_clicks, choose_Estimator):
+    global n_estimators_glo, ClasiBA, Y_ClasiBA
+    if n_clicks > 0:
+        # Validar el rango del valor del Input
+        if choose_Estimator is not None and 0 < choose_Estimator < n_estimators_glo:
+            Estimador = ClasiBA.estimators_[choose_Estimator]
+            tree = components.plotTree(Estimador,columns_values_global,Y_ClasiBA)
+                
+            return html.Img(src='data:image/png;base64,{}'.format(tree), style={'width': '100%', 'height': 'auto'})
+        else:
+            return f"El valor debe ser mayor a 0 y menor a {n_estimators_glo}."
+    else:
+        return None

@@ -3,11 +3,13 @@ import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
 import dash_bootstrap_components as dbc
-import dash_daq as daq
 import dash_mantine_components as dmc
 from sklearn.preprocessing import label_binarize
 from sklearn.metrics import roc_curve, auc
-
+from sklearn.tree import plot_tree
+import matplotlib.pyplot as plt
+import base64
+import io
 
 """ Generate update component (just html) """
 upload_component = html.Div([
@@ -293,3 +295,19 @@ def rocMultipleGraph(X_val, Y_val, Clasificacion):
     return go.Figure(data=roc_curves, layout=roc_curve_fig)
 
 
+""" Imprimiendo árbol """
+""" Considerar que en bosques el DataFrame (Clasificación) requiere estimadores """
+def plotTree(Clasificacion, columns_values, Y_Clasificacion):
+
+    plot_tree(Clasificacion,
+                    feature_names=columns_values,
+                    class_names=Y_Clasificacion.astype(str))
+
+    # Guardar la figura en un objeto de tipo BytesIO
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+
+    # Codificar la imagen en base64
+    image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    return image_base64    
