@@ -5,6 +5,8 @@ import numpy as np
 import dash_bootstrap_components as dbc
 import dash_daq as daq
 import dash_mantine_components as dmc
+from sklearn.preprocessing import label_binarize
+from sklearn.metrics import roc_curve, auc
 
 
 """ Generate update component (just html) """
@@ -216,3 +218,78 @@ def params_tree_fores(index,type_algorithm):
         )
 
     return layout
+
+""" Matriz de clasificación para todo tipo de casos"""
+def matrizClasif(Matriz_Clasificacion):
+
+    table = html.Table([
+        html.Thead(
+            html.Tr([html.Th('Clasificación')] + [html.Th(col) for col in Matriz_Clasificacion.columns])
+        ),
+        html.Tbody([
+            html.Tr([
+                html.Td(Matriz_Clasificacion.index[i])] + [
+                html.Td(Matriz_Clasificacion.iloc[i, j]) for j in range(len(Matriz_Clasificacion.columns))
+            ]) for i in range(len(Matriz_Clasificacion))
+        ])
+    ])
+    return table
+
+""" Gráfica ROC para 2 características """
+def rocBinaryGraph(X_val, Y_val, Clasificacion):
+    roc_curve_fig = go.Figure()
+
+    fpr, tpr, _ = roc_curve(Y_val, Clasificacion.predict_proba(X_val)[:, 1])
+
+    roc_curve_fig = go.Figure(
+        data=go.Scatter(
+            x=fpr,
+            y=tpr,
+            mode='lines',
+            name='Curva ROC',
+            line=dict(color='blue'),
+        ),
+    )
+
+    roc_curve_fig.update_layout(
+        title='Curva ROC',
+        xaxis=dict(title='Tasa de Falsos Positivos'),
+        yaxis=dict(title='Tasa de Verdaderos Positivos'),
+    )
+    return roc_curve_fig
+
+
+
+""" Gráfica ROC para múltiples características """
+def rocMultipleGraph(X_val, Y_val, Clasificacion):
+    y_score = Clasificacion.predict_proba(X_val)
+    y_test_bin = label_binarize(Y_val, classes=[1, 2, 3])
+    n_classes = y_test_bin.shape[1]
+
+    roc_curves = []
+    fpr = dict()
+    tpr = dict()
+    roc_auc = dict()
+
+    for i in range(n_classes):
+        fpr[i], tpr[i], _ = roc_curve(y_test_bin[:, i], y_score[:, i])
+        roc_auc = auc(fpr[i], tpr[i])
+        roc_curve_trace = go.Scatter(x=fpr[i], y=tpr[i], mode='lines',
+                                    name='ROC curve (AUC = {:0.2f})'.format(roc_auc))
+        roc_curves.append(roc_curve_trace)
+
+    diagonal_trace = go.Scatter(x=[0, 1], y=[0, 1], mode='lines',
+                                name='Random', line=dict(dash='dash'))
+    roc_curves.append(diagonal_trace)
+
+    roc_curve_fig = go.Layout(
+        title='Rendimiento',
+        xaxis=dict(title='False Positive Rate'),
+        yaxis=dict(title='True Positive Rate'),
+        showlegend=True,
+        legend=dict(x=0.7, y=0.1),
+        hovermode='closest'
+    )
+    return go.Figure(data=roc_curves, layout=roc_curve_fig)
+
+

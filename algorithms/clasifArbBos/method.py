@@ -16,7 +16,8 @@ from sklearn import model_selection
 
 """ Variables predictoras y variables de clase """
 def variablesClasePredict(df,columns_values,claseSalida,size,random_s,shuffle):
-    if claseSalida == 'Diagnosis':
+    
+    if claseSalida[0] == 'Diagnosis':
         df = df.replace({'M': 0, 'B': 1})
     
     # Variables predictoras
