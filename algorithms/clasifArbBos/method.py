@@ -13,14 +13,12 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import accuracy_score
 from sklearn import model_selection
 
-# max_depth_glo = None
-# min_samples_split_glo=None
-# min_samples_leaf_glo=None
-# random_state_glo=None
-# n_estimators_glo=None
 
 """ Variables predictoras y variables de clase """
 def variablesClasePredict(df,columns_values,claseSalida,size,random_s,shuffle):
+    if claseSalida == 'Diagnosis':
+        df = df.replace({'M': 0, 'B': 1})
+    
     # Variables predictoras
     X = np.array(df[columns_values])
 
@@ -62,9 +60,10 @@ def trainingTrees(columns_values, X_train, X_validation, Y_train, Y_validation, 
     Y_ClasificacionAD = ClasificacionAD.predict(X_validation)
     ValoresAD = pd.DataFrame(Y_validation, Y_ClasificacionAD)
 
-    modelValidation(columns_values, ClasificacionAD, X_validation, Y_validation,Y_ClasificacionAD, claseSalida)
+    layout = modelValidation(columns_values, ClasificacionAD, X_validation, Y_validation,Y_ClasificacionAD, claseSalida)
 
     print("\nCLASIFICACIÓN Arboles")
+    return layout
 
 """ Entrenamiento de bosque """
 def trainingForest(columns_values, X_train, X_validation, Y_train, Y_validation, depth,samples_split,samples_leaf,random_s,estimators, claseSalida):
@@ -87,13 +86,13 @@ def trainingForest(columns_values, X_train, X_validation, Y_train, Y_validation,
     Y_ClasificacionBA = ClasificacionBA.predict(X_validation)
     ValoresBA = pd.DataFrame(Y_validation, Y_ClasificacionBA)
 
-    modelValidation(columns_values, ClasificacionBA, X_validation, Y_validation,Y_ClasificacionBA, claseSalida)
+    layout = modelValidation(columns_values, ClasificacionBA, X_validation, Y_validation,Y_ClasificacionBA, claseSalida)
 
     print("\nCLASIFICACIÓN BOSQUE")
+    return layout
 
 
-
-""" Validación del modelo -> dash_app.py.
+""" VALIDACIÓN DEL MODELO -> dash_app.py.
 Se necesitan las columnas seleccionadas para crear los inputs predictores"""
 def modelValidation(columns_values, Clasificacion,X_validation,Y_validation, Y_Clasificacion, claseSalida):
     #global ClasificacionRL,X_validation,Y_validation,Y_ClasificacionRL
@@ -111,6 +110,6 @@ def modelValidation(columns_values, Clasificacion,X_validation,Y_validation, Y_C
     print(exactitud)
     print(report)
     ## ------ Gráficas y Layout
-    #layout = lay.section_graphs_interactive(exactitud, report, Matriz_Clasificacion, claseSalida, X_validation, Y_validation, Clasificacion, columns_values)
+    layout = lay.section_graphs_interactive(exactitud, report, Matriz_Clasificacion, claseSalida, X_validation, Y_validation, Clasificacion, columns_values)
 
-    #return layout
+    return layout

@@ -67,6 +67,9 @@ def update_output_columns(n_clicks, columns_values, size_train, random_state, sh
     claseSalida = 'Diagnosis' if 'Diagnosis' in df.columns else 'Outcome'
 
     if n_clicks is not None and columns_values is not None and len(columns_values) > 0:
+        #Se establece un valor por defecto en el tamaño
+        if size_train is None:
+            size_train = 20
         met.variablesClasePredict(df, columns_values, claseSalida, (size_train / 100), random_state, shuffle)
 
         layout_validation = met.modelValidation(columns_values, app)

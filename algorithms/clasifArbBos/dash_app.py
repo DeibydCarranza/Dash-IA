@@ -68,6 +68,9 @@ def update_output_columns(n_clicks, columns_values, size_train, random_state, sh
     
     # Si no se ha presionado "Entrenar" y no se han ingresado mínimo 2 columnas en dropdwon 
     if n_clicks is not None and columns_values is not None and len(columns_values) > 1:
+        #Se establece un valor por defecto en el tamaño
+        if size_train is None:
+            size_train = 20
         X_t, X_val, Y_t, Y_val = met.variablesClasePredict(df,columns_values,columna_filtrada,(size_train/100),random_state,shuffle)
         layout_models = lay.tab_for_methods()
         return f'Carga exitosa de entrenamiento', layout_models
@@ -108,9 +111,12 @@ def generate_input_values_tree(n_clicks, max_depth, min_samples_split, min_sampl
             'min_samples_leaf': min_samples_leaf,
             'random_state': random_state
         }
-        met.trainingTrees(columns_values_global, X_t, X_val, Y_t, Y_val, max_depth, min_samples_split, min_samples_leaf, random_state, columna_filtrada)
+        res_layoutAD = met.trainingTrees(columns_values_global, X_t, X_val, Y_t, Y_val, max_depth, min_samples_split, min_samples_leaf, random_state, columna_filtrada)
+        return [
+            res_layoutAD
+        ]
     else:
-        return ''
+        return []
 
 # Define el callback para capturar los valores de los inputs para Bosque
 @app.callback(
@@ -131,7 +137,9 @@ def generate_input_values_forest(n_clicks, max_depth, min_samples_split, min_sam
             'random_state': random_state,
             'n_estimators': n_estimators
         }
-        met.trainingForest(columns_values_global,X_t, X_val, Y_t, Y_val, max_depth,min_samples_split,min_samples_leaf,random_state ,n_estimators, columna_filtrada)
-        return valuesForest
+        res_layoutBA = met.trainingForest(columns_values_global,X_t, X_val, Y_t, Y_val, max_depth,min_samples_split,min_samples_leaf,random_state ,n_estimators, columna_filtrada)
+        return [
+            res_layoutBA
+        ]
     else:
-        return ''
+        return []
