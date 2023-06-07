@@ -65,6 +65,7 @@ def interactive_table(df):
            height=900,
            title='Matriz de correlación',
        )
+    fig.update_traces(marker=dict(size=3)) 
 
     return dcc.Graph(figure=fig)
 
