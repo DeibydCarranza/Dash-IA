@@ -7,31 +7,6 @@ from dash import dcc, html,dash_table
 
 import dash_bootstrap_components as dbc
 
-""" Vista en 2 pestañas de los métodos presentes """
-def tab_for_methods():
-
-    layout = html.Div([
-            dcc.Tabs(id="tabs_methods", value='tab_method_algor',children=[
-                dcc.Tab(label='Clasificación por árbol de decisión', value='tab-1', children=[
-                    
-                    # Llama a los inputs propios del árbol (0-> indice, False->Tipo árbol)
-                    comp.params_tree_fores(0,False),
-                    dmc.Button('Generar carga de inputs', id='generate-button-tree', n_clicks=0,variant="gradient"),
-                    html.Div(id='input-values-container-tree')
-
-                ]),
-                dcc.Tab(label='Clasificación por bosque aleatorio', value='tab-2',children=[
-                    # Llama a los inputs propios del árbol (1-> indice, False->Tipo árbol)
-                    comp.params_tree_fores(1,True),
-                    dmc.Button('Generar carga de inputs', id='generate-button-forest', n_clicks=0,variant="gradient"),
-                    html.Div(id='input-values-container-forest')
-
-                ]),
-            ],style={'margin-bottom':'60px','margin-top':'30px'}
-            )
-       ])
-    return layout
-
 
 """ Sección donde se renderizan las tablas, gráficas y componentes propios del algoritmo ->method.py"""
 def section_graphs_interactive(exactitud,report,Matriz_Clasificacion,Y_Clasi,X_val,Y_val,Clasificacion,columns_values, isForest):

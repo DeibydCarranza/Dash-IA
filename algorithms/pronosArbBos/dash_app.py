@@ -1,13 +1,11 @@
 import dash
-from dash import dcc, html,Input, Output, callback, State
-from .. import components
-import os
+from dash import dcc, html,Input, Output, State
+from .. import components as comp
+from . import method as met
 from datetime import date
 from . import tool as tl 
 from . import layout as lay
 from django_plotly_dash import DjangoDash
-import matplotlib.pyplot as plt   
-import seaborn as sns     
 import dash_bootstrap_components as dbc
 import dash_mantine_components as dmc
 from dash_iconify import DashIconify             
@@ -20,6 +18,12 @@ min_step = 0
 max_step = 4
 active = 0
 
+X_t = None
+X_val = None
+Y_t = None
+Y_val = None
+
+CompanyHist = None
 df = None
 selected_ticker = None
 
@@ -45,7 +49,13 @@ app.layout= html.Div(
                     dmc.StepperStep(
                         label="Aplicación del algoritmo",
                         description="Selección del tipo de algoritmo y ejecución",
-                        children=[]
+                        children=[
+    comp.mod_params_train(1),
+    dmc.Button('Entrenar', id='btn-train', n_clicks=0, variant="gradient"),
+    html.Div("", style={'margin-bottom': '40px'}),
+    html.Div(id='columns-output-container-1'),  # Primera salida del callback
+    html.Div(id='model-validation-layout')  # Segunda salida del callback
+]
                     ),
                     dmc.StepperStep(
                         label="Nuevos pronósticos",
@@ -130,7 +140,7 @@ def update_output(n_clicks, ticker,start_date, end_date, interval):
     if interval is None or interval == '':
         return "Ingrese un intervalo en días válido."
     
-    global df
+    global df,CompanyHist
     df = yf.Ticker(str(ticker))
 
     # Leyendo y formateando las fechas a YYYY-MM-DD
@@ -138,5 +148,35 @@ def update_output(n_clicks, ticker,start_date, end_date, interval):
     end_date_object = date.fromisoformat(end_date)
     start_date_formatted = start_date_object.strftime('%Y-%-m-%-d')
     end_date_formatted = end_date_object.strftime('%Y-%-m-%-d')
+
+    graph, CompanyHist = tl.table_historial(df,ticker,start_date_formatted,end_date_formatted,interval)
     
-    return tl.table_historial(df,ticker,start_date_formatted,end_date_formatted,interval)
+    return graph
+
+""" Paso de columnas para ser procesadas mediante dropdown"""
+@app.callback(
+    [Output('columns-output-container-1', 'children'), Output('model-validation-layout', 'children')],
+    [Input('btn-train', 'n_clicks')],
+    [State('input_size_train_1', 'value'),
+     State('input_random_state_1', 'value'),
+     State('boolean-switch_1', 'checked'),
+     State('model-validation-layout', 'children')]
+)
+def update_output_columns(n_clicks, size_train, random_state, shuffle, current_validation_layout):
+    global  X_t, X_val, Y_t, Y_val
+    print("\t\t------162 dashpp")
+    # Si no se ha presionado "Entrenar" y no se han ingresado mínimo 2 columnas en dropdwon 
+    if n_clicks is not None:
+        #Se establece un valor por defecto en el tamaño
+        if size_train is None:
+            size_train = 20
+        print("\t\t------169 dashpp")
+        X_t, X_val, Y_t, Y_val = met.variablesClasePredict(CompanyHist,(size_train/100),random_state,shuffle)
+        layout_models = comp.tab_for_methods()
+        return f'Carga exitosa de entrenamiento', layout_models
+
+    return f'No has seleccionado ninguna variable para entrenar', current_validation_layout
+
+
+
+

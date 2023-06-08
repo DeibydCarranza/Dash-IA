@@ -81,7 +81,7 @@ def update_output_columns(n_clicks, columns_values, size_train, random_state, sh
         if size_train is None:
             size_train = 20
         X_t, X_val, Y_t, Y_val = met.variablesClasePredict(df,columns_values,columna_filtrada,(size_train/100),random_state,shuffle)
-        layout_models = lay.tab_for_methods()
+        layout_models = components.tab_for_methods()
         return f'Carga exitosa de entrenamiento', layout_models
 
     return f'No has seleccionado ninguna variable para entrenar', current_validation_layout

@@ -16,7 +16,7 @@ def table_historial(df,ticker,startDate,endDate,intervalDate):
     html.Div(id='output-container-date-picker-range'),
     graph_figure= lay.render_prices(CompanyHist,ticker)
     
-    return graph_figure
+    return graph_figure,CompanyHist
 
 
 
