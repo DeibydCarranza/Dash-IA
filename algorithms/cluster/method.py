@@ -2,6 +2,8 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from scipy.spatial.distance import cdist    # Para el cálculo de distancias
 from scipy.spatial import distance
 import pandas as pd
+import scipy.cluster.hierarchy as shc
+from sklearn.cluster import AgglomerativeClustering
 
 def escalar(df):
        estandarizar = StandardScaler()
@@ -22,3 +24,6 @@ def matriz_distancia(type,num,MEstandarizada):
 		DstEuclidiana = cdist(MEstandarizada, MEstandarizada, metric=type,p=num)
 		M = pd.DataFrame(DstEuclidiana)
 		return M
+def tree_j(MEstandarizada,Metrica):
+	Arbol = shc.dendrogram(shc.linkage(MEstandarizada, method='complete', metric=Metrica))
+	return Arbol

@@ -1,6 +1,7 @@
 # PyPl
 import dash
 from dash import Input, Output,State, callback,dash_table, html,ctx,dcc
+from dash.exceptions import PreventUpdate
 import os 
 from django_plotly_dash import DjangoDash
 import dash_mantine_components as dmc
@@ -12,6 +13,8 @@ from . import method as mt
 path_file = os.path.join(os.path.dirname(__file__), '../data/file.csv')
 
 df = None
+df_without_tag = None
+df_feature = None
 estandarizar = None
 """ ———————— Instancia de la app ————————"""
 app = DjangoDash('section_cluster')
@@ -30,23 +33,26 @@ app.layout= html.Div(
                 breakpoint="sm",
                 children=[
                     dmc.StepperStep(
-                        label="Upload files",
-                        description="Draw and drop your files",
-                        children=[components.upload_component,layouts.select_input]
+                        label="Archivo",
+                        description="Carga un dataset",
+                        children=[components.upload_component,
+                                  layouts.select_input]
                     ),
                     dmc.StepperStep(
-                        label="Feature Selection",
-                        description="Reducing the dimensionality of the dataframe",
-                        children= layouts.matrix_cluster
+                        label="Selecciónn de caracteristicas",
+                        description="Reduciendo la dimensionalidad",
+                        children= [layouts.matrix_cluster,
+                                    layouts.MultiSelect_to_featuring,
+                                    html.Div(id='Output-Graph_feature')]
                     ),
                     dmc.StepperStep(
-                        label="Data Standardization",
-                        description="Helping all variables have the same impact",
+                        label="Estandarización",
+                        description="Generando todas las variables tengan el mismo impacto",
                         children=layouts.standarizar
                     ),
                     dmc.StepperStep(
-                        label="Metrics",
-                        description="Get full access",
+                        label="Clustering",
+                        description="Aplicando algoritmo",
                         children=[layouts.select_algorithm,
                                 layouts.p_to_minkowski]
                     ),
@@ -91,9 +97,7 @@ def update(back, next_, current):
     else:
         step = step + 1 if step < max_step else step
     return step,step
-
-
-# DragandDrop
+# Upload files
 @app.callback(
         [Output('button-container-est', 'style'),
         Output('output-data-upload', 'children'),
@@ -112,12 +116,10 @@ def update_output(list_of_contents, list_of_names):
         # leyendo los nombre las de las columnas y agrgandolos en un array
         data_array = tl.select_items_df(tl.extract_titles_columns(df))
         return {'display': 'block'}, [render],{'display': 'block'},data_array
-
-
 # Estandarizar
 @app.callback(
-    [Output('select-metricas', 'style')
-    , Output('container-button-timestamp','children')],
+    [Output('select-metricas', 'style'),
+     Output('container-button-timestamp','children')],
     [Input('btn-nclicks-nor', 'n_clicks'),
      Input('btn-nclicks-esc', 'n_clicks'),
      Input('btn-nclicks-view', 'n_clicks')]
@@ -125,21 +127,20 @@ def update_output(list_of_contents, list_of_names):
 def update_output(btn1_clicks, btn2_clicks, btn3_clicks):
     ctx = dash.callback_context
     global estandarizar
-    global df
+    global df_feature
     if not ctx.triggered:
         return {'display': 'none'},''
 
     button_id = ctx.triggered[0]['prop_id'].split('.')[0]
 
     if button_id == 'btn-nclicks-nor':
-        estandarizar = mt.normalizar(df)
+        estandarizar = mt.normalizar(df_feature)
     elif button_id == 'btn-nclicks-esc':
-        estandarizar = mt.escalar(df)
+        estandarizar = mt.escalar(df_feature)
     elif button_id == 'btn-nclicks-view':
         estandarizar = tl.convert_to_dataframe(estandarizar) # numpy to dataframe        
         return {'display': 'block'},tl.render_results(estandarizar)
     return {'display': 'none'},''
-
 # Metricas
 @app.callback([Output('input-to-minkowski', 'style'),
                Output('selected-value-metricas', "children"),
@@ -155,7 +156,7 @@ def select_value(type):
         return {'display': 'none'}, matriz,{'display': 'none'}
     else:
          return {'display': 'none'}, '',{'display': 'none'}
-
+# Selecting lambda
 @app.callback(
     Output('output-valor', 'children'),
     [Input('button-leer-valor', 'n_clicks')],
@@ -173,29 +174,65 @@ def leer_valor(n_clicks, valor_lambda):
         else:
             return 'El campo de entrada está vacío'
     return ''
-
+# Upload tag
 @app.callback(
-    Output('output_matrix_clu', 'children'),
-    Input('stepper-state_clu', 'data')
+    [Output("output_delete_tag", "children"),
+     Output("store_tag", "data")],
+    Input("select_tag_clu", "value")
 )
-def display_matrix(numSteper):
-    global df
-    print('*******************')
-    print(numSteper)
-    print(df)
-    if numSteper == 1:
-        matrix = tl.interactive_pairplot(df)
-        print(tl.extract_titles_columns(df))
+def select_value(value):
+    global df,df_without_tag
+    if value == '':
+        raise PreventUpdate  # No hay cambio de valor, no se ejecuta el callback
+    else:
+        tag = [value]
+        df_without_tag = tl.drop_tag(df,tag)
+        render = tl.render_results(df_without_tag)
+        return render,value
+# Matrix Y Mapa de calor
+@app.callback(
+    Output('output_tabs_clustering', 'children'),
+    [Input('tab_clustering', 'value'),
+     Input('store_tag', 'data')]
+)
+def render_content(typeGraph,tag):
+    global df,df_without_tag
+    if typeGraph == "despersion":
+        return tl.interactive_pairplot(df,df_without_tag,tag)
+    elif typeGraph == "correlacion":
+        return tl.interactive_correlation_matrix(df_without_tag)
+    else: 
+        raise PreventUpdate
+#Display items on multiselect
+@app.callback(
+    Output('input_multiselect','data'),
+    Input('store_select','data')
+)
+def fill_multiselectiong(step):
+    global df_without_tag
+    if step == 1:
+         data_array = tl.select_items_df(tl.extract_titles_columns(df_without_tag))
+         return data_array
+    else: 
+        raise PreventUpdate
+#Generate matrix to work
+@app.callback(
+    Output('Output-Graph_feature', 'children'),
+    [Input('generate_matrix_ok', 'n_clicks'),
+     Input('input_multiselect','value')]
+)
+def print_text(n_clicks,value):
+    global df_feature
+    ctx = dash.callback_context
+    if not ctx.triggered:
+        print('else')
+        raise PreventUpdate
+    button_id = ctx.triggered[0]['prop_id']
+    if button_id == "generate_matrix_ok.n_clicks":
+        df_feature = tl.matrix_redimensionada(df_without_tag,value)
+        matrix = tl.render_results(df_feature)
+        print(type(df_feature))
         return matrix
     else:
-        return ''
-
-# @app.callback(Output("output-data-upload", "children"),
-#               Input("select_tag_clu", "value"))
-# def select_value(value):
-#     global df
-#     # sobreescribiendo el df sin la etiqueta
-#     df = tl.drop_column(df,value)
-#     render = tl.render_results(df)
-#     return render
-    
+        print('else')
+        raise PreventUpdate

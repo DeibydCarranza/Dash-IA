@@ -5,7 +5,9 @@ import pandas as pd
 import numpy as np
 from .. import components as comp
 import plotly.express as px
-
+import seaborn as sns
+import plotly.graph_objects as go
+import matplotlib.pyplot as mplo
 
 """ Save data on file, generete dataframe and return dash_tabe """
 def parse_contents(contents, filename,path_file):
@@ -60,26 +62,6 @@ def convert_to_dataframe(data):
     else:
         raise ValueError("El parámetro de entrada no es un DataFrame ni un arreglo de NumPy.")
 
-
-def interactive_pairplot(df):
-    fig = px.scatter_matrix(df, dimensions=df.columns, color='comprar')   
-    fig.update_traces(marker=dict(size=3)) 
-    fig.update_layout(
-        height=800,
-        width = 600,
-        title='Densidad y gráficas de dispersión',
-        font=dict(size=10),
-        plot_bgcolor='#F9F9F9',
-        paper_bgcolor='#F9F9F9',
-        showlegend=True,
-        hovermode='closest',
-        hoverlabel=dict(bgcolor="white", font_size=10),
-        xaxis=dict(showgrid=False, zeroline=False, visible=False),
-        yaxis=dict(showgrid=False, zeroline=False, visible=False),
-    )
-    
-    return dcc.Graph(figure=fig)
-
 def extract_titles_columns(df):
     column_names = df.columns.tolist()
     print(column_names)
@@ -89,6 +71,56 @@ def select_items_df(array_items):
     items_select = [{"value": item, "label": item} for item in array_items]
     return items_select
 
-def drop_column(df,column_name):
-    df = df.drop(column_name,axis=1)
+def drop_tag(df_original,columnas_a_excluir):
+    df_nuevo = df_original.loc[:, ~df_original.columns.isin(columnas_a_excluir)]
+    return df_nuevo
+
+"""" Matriz de correlaciones """
+def interactive_correlation_matrix(df):
+       correlation_matrix = df.corr()
+       mask = np.tri(correlation_matrix.shape[0], k=0)
+       correlation_matrix = np.where(mask, correlation_matrix, np.nan)
+       correlation_matrix = np.flipud(correlation_matrix)  # Invertir las filas de la matriz
+       fig = go.Figure(data=go.Heatmap(
+              z=correlation_matrix,
+              x=df.columns,
+              y=df.columns[::-1],
+              colorscale='RdBu_r',
+              zmin=-1,
+              zmax=1,
+              colorbar=dict(
+              title='Correlación'
+              ),
+              hovertemplate='x: %{x}<br>y: %{y}<br>correlation: %{z}<extra></extra>'
+       ))
+
+       fig.update_layout(
+              title='Matriz de correlación',
+              height=500,
+              width=500,
+              xaxis_showgrid=False,
+              yaxis_showgrid=False,
+              template='plotly_white'
+       )
+       return dcc.Graph(figure=fig)
+
+def interactive_pairplot(df_original,df_noTag,tag_to_color):
+    print(df_noTag)
+    fig = go.Figure(data=go.Splom(
+                    dimensions = [dict(label=column, values=df_noTag[column]) for column in df_noTag.columns],
+                    marker=dict(color=df_original[tag_to_color],
+                                size=5,
+                                colorscale='Bluered',
+                                line=dict(width=0.5,color='rgb(230,230,230)')),
+                    diagonal=dict(visible=True)))
+    fig.update_layout(dragmode='select',
+                    width=1000,
+                    height=1000,
+                    showlegend=False,
+                    hovermode='closest')
+    return dcc.Graph(figure=fig)
+
+def matrix_redimensionada(df_standarAndNoTag,Array_attributs):
+    MatrizHipoteca = np.array(df_standarAndNoTag[Array_attributs])
+    df = pd.DataFrame(MatrizHipoteca)
     return df

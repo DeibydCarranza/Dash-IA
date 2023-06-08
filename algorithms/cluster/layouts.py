@@ -1,4 +1,4 @@
-from dash import html,ctx
+from dash import html,ctx,dcc
 import dash_mantine_components as dmc
 
 standarizar = html.Div(id='button-container-est',children=[
@@ -31,23 +31,57 @@ p_to_minkowski = dmc.Group(id = 'input-to-minkowski', children = [
     ]
 )
 
-matrix_cluster = html.Div(
-    id='div_matrix_clu',
+matrix_cluster = dmc.Accordion(
+    id='tab_matrix_clustering',
     children=[
-        html.H4("CORRELATION MATRIX"),
-        html.Div(
-            id='output_matrix_clu',
-            style={
-                'display': 'flex',
-                'justify-content': 'center',
-                'align-items': 'center'
-            }
+        dmc.AccordionItem(
+            children=[
+                dmc.AccordionControl("Apoyos Visuales"),
+                dmc.AccordionPanel(
+                    children=[
+                        dmc.Tabs(
+                            [
+                                dmc.TabsList(
+                                    position="center",
+                                    grow=True,
+                                    children=[
+                                        dmc.Tab("Gráfica de Dispersión", value="despersion"),
+                                        dmc.Tab("Matriz de Correlación", value="correlacion")
+                                    ]
+                                )
+                            ],
+                            id='tab_clustering',
+                            value='',
+                            color="blue",
+                            variant='pills',
+                            orientation="horizontal"
+                        ),
+                        html.Div(
+                            id='output_tabs_clustering',
+                            style={
+                                "paddingTop": 10,
+                                "display": "flex",
+                                "justifyContent": "center",
+                                "alignItems": "center"
+                            }
+                        )
+                    ]
+                )
+            ],
+            value="on"
         )
-    ]
+    ],
+    style={
+        "position": "relative",
+        "textAlign": "center"
+    }
 )
+
+
 
 select_input = html.Div( id='tag', children =
     [
+        dcc.Store(id="store_tag"),
         dmc.Select(
             label="Select tag",
             placeholder="ej. diagnostic, ...",
@@ -55,8 +89,52 @@ select_input = html.Div( id='tag', children =
             value="",
             data=[],
             style={"width": 200, "marginBottom": 10},
-        )
+        ), 
+        html.Div(id = 'output_delete_tag')
     ]
 )
 
+MultiSelect_to_featuring = html.Div( id = 'SuperDiv_MultiSelect',children =
+    [
+        dmc.MultiSelect(
+            label="Caracteristicas para el algoritmo",
+            placeholder="No atributos de alta correlación",
+            id="input_multiselect",
+            value=[],
+            data=[],
+            style={"width": 400, "marginBottom": 10},
+        ),
+        dmc.Text(id='read_multiselect', style = {'display': 'none'}),
+        dmc.Button("Generar Matrix", id = 'generate_matrix_ok'),
+    ]
+)
 
+clustering = html.Div([
+    dmc.Tabs(
+        [
+            dmc.TabsList(
+                position="center",
+                grow=True,
+                children=[
+                    dmc.Tab("Jerarquico", value="j"),
+                    dmc.Tab("Particional", value="p")
+                ]
+            )
+        ],
+        id='tap_logic_clustering',
+        value='',
+        color="blue",
+        variant='pills',
+        orientation="horizontal"
+    ),
+    html.Div(
+        id='output_tabs_logic_Clu',children=[
+        ],
+        style={
+            "paddingTop": 10,
+            "display": "flex",
+            "justifyContent": "center",
+            "alignItems": "center"
+        }
+    )
+])

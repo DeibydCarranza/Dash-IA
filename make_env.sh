@@ -24,7 +24,14 @@ find . -wholename './logs' -delete
 find . -wholename './.reports' -delete
 
 #
-python${PYTHON_VER} -m venv venv
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    python${PYTHON_VER} -m venv venv
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    python3 -m venv venv
+else
+    echo "Sistema operativo no compatible"
+    exit 1
+fi
 #
 source venv/bin/activate
 #
