@@ -42,9 +42,11 @@ def selector_date():
             id='my-date-picker-range',
             min_date_allowed=date(1995, 8, 5),
             max_date_allowed=date.today(),
-            initial_visible_month=date.today(),
+            initial_visible_month=date(2020, 1, 1),
             end_date=date.today(),
             clearable=True,
+            start_date_placeholder_text="DD/MM/AAAA",
+            end_date_placeholder_text="DD/MM/AAAA"
         )
         ])
     return layout

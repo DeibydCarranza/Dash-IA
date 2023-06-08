@@ -10,13 +10,11 @@ from . import layout as lay
 
 
 """ Generando el historial en rango de fechas """
-def table_historial(ticker):
-    df = yf.Ticker(str(ticker))
-
-    CompanyHist = df.history(start='2019-01-01', end='2023-05-25', interval='1d')
+def table_historial(df,ticker,startDate,endDate,intervalDate):
+    
+    CompanyHist = df.history(start=startDate, end=endDate, interval=(str(intervalDate)+'d'))
     html.Div(id='output-container-date-picker-range'),
     graph_figure= lay.render_prices(CompanyHist,ticker)
-    
     
     return graph_figure
 

@@ -168,7 +168,7 @@ def update_output_bosque(n_clicks, choose_Estimator):
         return None
 
 
-
+# Descargando el bosque generado en .txt
 @app.callback(
     Output("download-reporte-bosque", "data"),
     [Input("btn-descarga-bosque", "n_clicks")],
@@ -180,7 +180,7 @@ def descargar_reporte_bosque(n_clicks):
     contenido = export_text(Estimador,feature_names =columns_values_global)
     return dict(content=contenido, filename="reporteBosque.txt")
 
-
+# Descargando el árbol generado en .txt
 @app.callback(
     Output("download-reporte-arbol", "data"),
     [Input("btn-descarga-arbol", "n_clicks")],

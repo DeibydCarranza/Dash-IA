@@ -16,69 +16,72 @@ path_file = os.path.join(os.path.dirname(__file__), '../data/file.csv')
 
 
 # ------- Funciones -----------
-""" Generación de los componentes tipo tabla donde se muestran las reglas """
-def generate_card(data, index,res_data): 
-    if not data:
-        return None
-
-    id_str = f"toggle-button-{index}"
-    description = html.Div(
-        html.P('Tomando como antecedente ' +str(res_data[index]['Antecedente']+' existe un aumento de posibilidades de  '
-            +str(res_data[index]['Elevación'])+ ' veces para consumir igualmente '+str(res_data[index]['Consecuente'])+'. Tal que se tiene una confianza del '
-            +str(res_data[index]['Confianza'])+' considerando una importancia de la regla del '+str(res_data[index]['Soporte'])),
-               id=f"descript-{index}",
-               style={'display': 'none'},
-               className="description_rule"),
-    )
-    button = html.Button(
-        id=id_str,
-        className='toggle-button',
-        **{"data-target": index},
-        children='Ver detalles',
-        n_clicks=0,
-        style={'margin-left': '10px'},
-    )
-    description_row = html.Tr([
-        html.Td(
-            html.Table(
-                html.Tr(html.Td(description, colSpan='7')),
-                className="nested-table"
-            ),
-            className="single-column-table",
-            colSpan='7'
-        )
-    ], id=f"description-row-{index}")
-
-    return [html.Tr([
-                html.Td(str(value)) for value in data.values()
-            ] + [html.Td(button)]),
-            description_row]
-
 """ Recuperando los valores de las reglas al modificar los parámetros"""
 def show_rules(df, input_val_1, input_val_2, input_val_3):
 
     results_df = met.application(df, input_val_1, input_val_2, input_val_3)
+    print(results_df)
+
     if not results_df.empty:
-        # Convertir el DataFrame en una lista de diccionarios
-        res_data = results_df.to_dict('records')
-        res_data = [data for data in res_data if isinstance(data, dict)]
+        # Crear una lista para almacenar los elementos del acordeón
+        accordion_items = []
 
-        # Generar los títulos de la tabla y sus filas
-        title_row = html.Tr([html.Th(col) for col in res_data[0].keys()] + [html.Th("Acciones")])
-        titles = html.Thead(title_row)
-        card_rows = []
-        for index, data in enumerate(res_data):
-            card_rows.extend(generate_card(data, index, res_data))
+        for index, row in results_df.iterrows():
+            regla = row['Regla']
+            antecedente = row['Antecedente']
+            consecuente = row['Consecuente']
+            soporte = row['Soporte']
+            confianza = row['Confianza']
+            elevacion = row['Elevación']
 
-        # Generar el cuerpo de la tabla con las filas de tarjetas
-        card_body = html.Tbody(card_rows)
-        table_rules = html.Table([titles, card_body], id="titulos")
-        cards_container = html.Div(table_rules, className='cards-container')
+            accordion_item = dmc.AccordionItem([
+                    dmc.AccordionControl([
+                        html.Table([
+                            html.Tbody(
+                                html.Tr([
+                                    html.Td(regla, style={"width": "27%"}),
+                                    html.Td(antecedente, style={"width": "15%"}),
+                                    html.Td(consecuente, style={"width": "15%"}),
+                                    html.Td(soporte, style={"width": "17%"}),
+                                    html.Td(confianza, style={"width": "15%"}),
+                                    html.Td(elevacion, style={"width": "19%"}),
+                                ])
+                            )
+                        ])                        
+                    ]),
+                    dmc.AccordionPanel(
+                        html.Div(
+                            html.P('Tomando como antecedente ' +str(antecedente)+' existe un aumento de posibilidades de  '
+                                +str(elevacion)+ ' veces para consumir igualmente '+str(consecuente)+'. Tal que se tiene una confianza del '
+                                +str(confianza)+' considerando una importancia de la regla del '+str(soporte),
+                                id=f"descript-{index}",
+                                className="description_rule"),
+                        )
+                    ),
+                ],
+                value=f"item-{index}",
+            )
 
-        return html.Div([cards_container])
+            accordion_items.append(accordion_item)
+
+        accordion = dmc.Accordion(children=accordion_items)
+        cards_container = html.Div(accordion, className='cards-container')
+        titulos = html.Table([
+                            html.Thead(
+                                html.Tr([
+                                    html.Th("Regla", style={"width": "25%"}),
+                                    html.Th("Antecedente", style={"width": "15%"}),
+                                    html.Th("Consecuente", style={"width": "15%"}),
+                                    html.Th("Soporte", style={"width": "15%"}),
+                                    html.Th("Confianza", style={"width": "15%"}),
+                                    html.Th("Elevación", style={"width": "15%"}),
+                                ])
+                            ),
+                        ]) 
+        return html.Div([titulos,cards_container])
     else:
         return html.Div('No se encontraron reglas asociadas a los parámetros.')
-    
+
 
 """ Bloque de slider/Input, se considera sufijos para identificarlos """
 def block_params():
@@ -94,8 +97,8 @@ def block_params():
             section_mod1,
             section_mod2,
             section_mod3,
-            html.Div(id="output-container"),  # Contenedor para mostrar los valores
             dmc.Button('Procesar', id='submit-val',variant="gradient"),
+            html.Div(id="output-container"),  # Contenedor para mostrar los valores
         ],
         className='block-params-container'
     )
