@@ -109,7 +109,7 @@ def modelValidation(columns_values, Clasificacion,X_validation,Y_validation, Y_C
                                    colnames=['Clasificación']) 
     
     #Se calcula la exactitud promedio de la validación
-    exactitud = accuracy_score(Y_validation,Y_Clasificacion)
+    exactitud = (accuracy_score(Y_validation,Y_Clasificacion)*100)
 
     report = classification_report(Y_validation, Y_Clasificacion)
 
