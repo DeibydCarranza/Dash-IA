@@ -16,6 +16,10 @@ df = None
 df_filtered = None
 columna_filtrada = None
 columns_values_global = [] 
+col_tot_Can = ['Diagnosis','Radius', 'Texture','Area','Smoothness','Compactness', 'Concavity', 'ConcavePoints','Symmetry','FractalDimension']
+col_tot_Diab = ['Pregnancies','Glucose','BloodPressure','SkinThickness','Insulin','BMI','DiabetesPedigreeFunction','Age','Outcome'] 
+col_tot_fetal = ['baseline value','accelerations','fetal_movement','uterine_contractions','light_decelerations','severe_decelerations','prolongued_decelerations','abnormal_short_term_variability','mean_value_of_short_term_variability','percentage_of_time_with_abnormal_long_term_variability','mean_value_of_long_term_variability','histogram_width','histogram_min','histogram_max','histogram_number_of_peaks','histogram_number_of_zeroes','histogram_mode','histogram_mean','histogram_median','histogram_variance','histogram_tendency','fetal_health']
+callback_values ={}
 
 X_t = None
 X_val = None
@@ -29,8 +33,27 @@ clasifiAD = None
 choose_Estimator_glo = None
 # ------- Funciones -----------
 
+def create_show_inputs_function(column):
+    @app.callback(
+        Output("output-container-prono-{}".format(column), "children"),
+        [Input("input-prono-{}".format(column), "value")]
+    )
+    def show_inputs(input1):      
+        # Si el valor del input no es nulo, almacena la clave-valor en el diccionario
+        if input1 is not None:
+            callback_values[column] = input1
+        
+        return u'Input 1 {}'.format(input1)
+
+    return show_inputs
 
 
+for column in col_tot_Can:
+    show_inputs_function = create_show_inputs_function(column)
+for column in col_tot_Diab:
+    show_inputs_function = create_show_inputs_function(column)
+for column in col_tot_fetal:
+    show_inputs_function = create_show_inputs_function(column)
 
 ## ----------  Sección a renderizar   ----------
 app.layout = html.Div(
@@ -55,7 +78,7 @@ def update_output(list_of_contents, list_of_names):
         return html.Div('No se seleccionó ningún archivo.')
     else:
         render, df, df_filtered, columna_filtrada = tl.parse_contents(list_of_contents, list_of_names, path_file)
-
+        callback_values.clear()
         children = [
             render
         ]
@@ -192,4 +215,21 @@ def descargar_reporte_arbol(n_clicks):
     return dict(content=contenido, filename="reporteArbol.txt")
 
 
-
+# Realizando la clasificación de elementos
+@app.callback(
+    Output("output-container-prono", "children"),
+    [Input("pronosticar-button", "n_clicks")]
+)
+def show_callback_values(n_clicks):
+    if n_clicks is not None and n_clicks > 0:
+        # Leer los valores del diccionario callback_values
+        values = callback_values.values()
+        columns = callback_values.keys()
+        print(callback_values)
+        if any(value is None or value == '' for value in values):
+            return "Ingrese los valores de todos los campos"
+        
+        resultado = met.pronosticar(values,columns)# Mostrar los valores en el contenedor de salida
+        return f"De acuerdo a los datos, la clasificación con los datos mostrados es el grupo {resultado}, considere que solo es un posible escenario a futuro. Igualmente revise la el significado de dicha clasificación"
+    
+    return "Ingrese los valores de todos los campos"

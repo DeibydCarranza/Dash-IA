@@ -137,6 +137,7 @@ def select_value(value):
     State('input_interval', 'value')]
 )
 def update_output(n_clicks, ticker,start_date, end_date, interval):
+    print(interval)
     if n_clicks is None:
         return dash.no_update
     
@@ -154,7 +155,7 @@ def update_output(n_clicks, ticker,start_date, end_date, interval):
     end_date_object = date.fromisoformat(end_date)
     start_date_formatted = start_date_object.strftime('%Y-%-m-%-d')
     end_date_formatted = end_date_object.strftime('%Y-%-m-%-d')
-
+    
     graph, CompanyHist = tl.table_historial(df,ticker,start_date_formatted,end_date_formatted,interval)
     
     return graph

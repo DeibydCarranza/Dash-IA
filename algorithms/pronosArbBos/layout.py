@@ -55,7 +55,7 @@ def selector_date():
 
 """ Sección para agrupar fecha e input """
 def section_params_date():
-
+    intervals = ["1d", "5d", "1wk", "1mo", "3mo"]
     layout = html.Div([
         dbc.Row(
             children=[
@@ -63,9 +63,19 @@ def section_params_date():
                     html.Label("Selección de fecha"),
                     selector_date()
                     ]), width=4),
+
                 dbc.Col(html.Div([
                         html.Label("Intervalo de días"),
-                        dcc.Input(id="input_interval", type="number", placeholder="Intervalo en días",min="1")
+                                dmc.Select(
+                                    data=intervals,
+                                    searchable=True,
+                                    id="input_interval",
+                                    nothingFound="No options found",
+                                    style={"width": 240},
+                                    icon=DashIconify(icon="radix-icons:magnifying-glass"),
+                                    rightSection=DashIconify(icon="radix-icons:chevron-down"),
+                                    placeholder="Selecciona un intervalo"
+                                ),
                     ]), width=4),
                 dbc.Col(html.Div([
                     html.Label("Procesamiento de datos"),

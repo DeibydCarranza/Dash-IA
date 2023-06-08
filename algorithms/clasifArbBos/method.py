@@ -14,6 +14,7 @@ from sklearn.metrics import accuracy_score
 from sklearn import model_selection
 
 isForest = None
+ClasificacionBA_glo = None
 
 """ Variables predictoras y variables de clase """
 def variablesClasePredict(df,columns_values,claseSalida,size,random_s,shuffle):
@@ -71,7 +72,7 @@ def trainingTrees(columns_values, X_train, X_validation, Y_train, Y_validation, 
 
 """ Entrenamiento de bosque """
 def trainingForest(columns_values, X_train, X_validation, Y_train, Y_validation, depth,samples_split,samples_leaf,random_s,estimators):
-    global isForest
+    global isForest,ClasificacionBA_glo
     isForest = True
 
     # Establecer valores por defecto si son None
@@ -87,7 +88,7 @@ def trainingForest(columns_values, X_train, X_validation, Y_train, Y_validation,
     ClasificacionBA = RandomForestClassifier(n_estimators=estimators,max_depth = depth, min_samples_split = samples_split, 
                                              min_samples_leaf = samples_leaf, random_state = random_s)
     ClasificacionBA.fit(X_train, Y_train)
-
+    ClasificacionBA_glo = ClasificacionBA
     #Se etiquetan las clasificaciones
     Y_ClasificacionBA = ClasificacionBA.predict(X_validation)
     ValoresBA = pd.DataFrame(Y_validation, Y_ClasificacionBA)
@@ -120,3 +121,13 @@ def modelValidation(columns_values, Clasificacion,X_validation,Y_validation, Y_C
                                             Y_Clasificacion, X_validation, Y_validation, Clasificacion, columns_values,isForest)
 
     return layout
+
+def pronosticar(valores,columnas):
+    global ClasificacionBA_glo
+    print(ClasificacionBA_glo)
+    if len(valores) == len(columnas):
+        PacienteID1 = pd.DataFrame([valores], columns=columnas)
+        resultado = ClasificacionBA_glo.predict(PacienteID1)
+        return resultado
+    else:
+        return None

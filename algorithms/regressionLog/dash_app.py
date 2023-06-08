@@ -8,18 +8,37 @@ from . import method as met
 
 
 columns_values_global = [] 
+col_tot_Can = ['Diagnosis','Radius', 'Texture','Area','Smoothness','Compactness', 'Concavity', 'ConcavePoints','Symmetry','FractalDimension']
+col_tot_Diab = ['Pregnancies','Glucose','BloodPressure','SkinThickness','Insulin','BMI','DiabetesPedigreeFunction','Age','Outcome'] 
 
 # ---------- Iniciando aplicación ---------------
 app = DjangoDash('section_regression')
 path_file = os.path.join(os.path.dirname(__file__), '../data/file.csv')
 df = None
 df_filtered = None
-
+callback_values ={}
 
 # ------- Funciones -----------
 
+def create_show_inputs_function(column):
+    @app.callback(
+        Output("output-container-prono-{}".format(column), "children"),
+        [Input("input-prono-{}".format(column), "value")]
+    )
+    def show_inputs(input1):      
+        # Si el valor del input no es nulo, almacena la clave-valor en el diccionario
+        if input1 is not None:
+            callback_values[column] = input1
+        
+        return u'Input 1 {}'.format(input1)
+
+    return show_inputs
 
 
+for column in col_tot_Can:
+    show_inputs_function = create_show_inputs_function(column)
+for column in col_tot_Diab:
+    show_inputs_function = create_show_inputs_function(column)
 
 ## ----------  Sección a renderizar   ----------
 app.layout = html.Div(
@@ -60,7 +79,7 @@ def update_output(list_of_contents, list_of_names):
      State('model-validation-layout', 'children')]
 )
 def update_output_columns(n_clicks, columns_values, size_train, random_state, shuffle, current_validation_layout):
-    # Resto del código...
+    
     global columns_values_global
     columns_values_global = columns_values
     # Seleccionamos la variable de resultados manualmente
@@ -93,39 +112,21 @@ def toggle_acordeon(n_clicks):
     else:
         return []
 
-
-
-# --------  Debe leer los valores de inputs y mostrar un string o en este caso 
-# -------- Un HTML renderizado con los valores
+# Realizando la clasificación de elementos
 @app.callback(
     Output("output-container-prono", "children"),
-    [Input("submit-button", "n_clicks")],
-    [State("input-prono-{}".format(column), "value") for column in columns_values_global]
+    [Input("pronosticar-button", "n_clicks")]
 )
-def show_inputs(n_clicks, *values):
-    global columns_values_global 
-    print(values,*values)
-
-    print("-----------------------")
-    if n_clicks is None:
-        return ""
-    else:
-        print(columns_values_global,values)
-        print(" | ".join((str(val) for val in values if val)))
-        return html.Div([
-            html.Label("Inputs:"),
-            html.Ul([
-                html.Li(f"{column}: {value}") for column, value in zip(columns_values_global, values)
-            ])
-        ])
-
-
-""" Prueba de que con un elemento específico sí funciona"""
-# @app.callback(
-#     Output("output-container-prono", "children"),
-#     [Input("input-prono-Radius", "value")]
-# )
-# def show_inputs(input1):
-#     print("-----------------------")
-#     print(columns_values_global,input1)
-#     return u'Input 1 {}'.format(input1)
+def show_callback_values(n_clicks):
+    if n_clicks is not None and n_clicks > 0:
+        # Leer los valores del diccionario callback_values
+        values = callback_values.values()
+        columns = callback_values.keys()
+        print(callback_values)
+        if any(value is None or value == '' for value in values):
+            return "Ingrese los valores de todos los campos"
+        
+        resultado = met.pronosticar(values,columns)# Mostrar los valores en el contenedor de salida
+        return f"De acuerdo a los datos, la clasificación con los datos mostrados es el grupo {resultado}, considere que solo es un posible escenario a futuro. Igualmente revise la el significado de dicha clasificación"
+    
+    return "Ingrese los valores de todos los campos"
