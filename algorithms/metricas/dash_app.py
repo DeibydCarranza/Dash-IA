@@ -202,23 +202,22 @@ def update_output(n_clicks,step,metric,l,element1,element2):
         if not ctx.triggered:
             raise PreventUpdate
         button_id = ctx.triggered[0]['prop_id']
-        if int(element1) > 0:
-            element1 = int(element1)-1
-        else:
-            element1 = int(element1)
-        if int(element2) > 0:
-            element2 = int(element2)-1
-        else:
-            element2 = int(element2)
+        element1 = int(element1)
+        element2 = int(element2)
+        print(estandarizar.shape[1])
         if element1 > (estandarizar.shape[1]) or element2 >(estandarizar.shape[1]):
-            return 'Solo numeros del 1 al '+str((estandarizar.shape[1]+1))
+            result = 'Solo numeros del 1 al '+str((estandarizar.shape[1]))
+            return  dmc.Alert(
+                        result,
+                        title="Alert of result",
+                    )
         if button_id == "comparar_send.n_clicks":
             if element1 >= 0 and element2 >= 0:
-                result = mt.compare_elementos(estandarizar,metric,l,element1,element2)
-                return  dmc.Alert(
-                            result,
-                            title="Alert of result",
-                        )
+                result = mt.compare_elementos(estandarizar,metric,l,(element1-1),(element2-1))
+            return  dmc.Alert(
+                        result,
+                        title="Alert of result",
+                    )
 
-            else:
-                return 'Llena los campos'
+        else:
+            return 'Llena los campos'
