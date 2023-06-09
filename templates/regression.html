@@ -12,6 +12,8 @@
         <link rel="stylesheet" href="{% static 'css/containers.css' %}" />
         <link rel="stylesheet" href="{% static 'css/header.css' %}" />
         <link rel="stylesheet" href="{% static 'css/home.css' %}" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 
         <link rel="shortcut icon" href="{% static '/img/favicon.png' %%}" type="image/x-icon" />
     </head>
@@ -19,17 +21,14 @@
     <body class="dash-template">   
         <header class="header-top">
             <div class="nav-wrapper">
-                <a href="/">
-                    <h1>Inicio</h1>
-                </a>
+                <a href="/">Inicio<i class="fa fa-home home-icon"></i></a>
             </div>
-        </header>         
+          </header>  
         {% include 'navbar.html' %}
 
         <div class="content-container">
             <div>
                 <h1>Regresión logística</h1>
-                <p>Agregar introducción y cosas random</p>
             </div>
             
             {# Sección necesaria  por usar 'plotly_direct' -> header&footer #}

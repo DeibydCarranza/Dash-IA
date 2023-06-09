@@ -60,9 +60,12 @@ def section_graphs_interactive(exactitud,report,Matriz_Clasificacion,Y_Clasi,X_v
 
     # Layoput principal que será devuelto
     layout = html.Div([
+        dmc.Text("Resultados del entrenamiento", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
+
         acordeon,
         html.Div(id="cmp-rendimientos-rocs"),
-
+            
+        dmc.Text("Aplicación a nuevas clasificaciones", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
         prediction_lay
     ])
 

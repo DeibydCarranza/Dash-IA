@@ -5,6 +5,7 @@ import os
 from . import tool as tl
 from django_plotly_dash import DjangoDash
 from . import method as met
+import dash_mantine_components as dmc
 
 
 columns_values_global = [] 
@@ -43,6 +44,7 @@ for column in col_tot_Diab:
 ## ----------  Sección a renderizar   ----------
 app.layout = html.Div(
     children=[
+        dmc.Text("Carga de archivo", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
         components.upload_component,
     ],
     style={'width': '100%', 'height': '100%'}

@@ -6,6 +6,7 @@ import os
 from .. import components as comp
 import yfinance as yf
 from . import layout as lay
+import dash_mantine_components as dmc
 
 
 
@@ -15,8 +16,13 @@ def table_historial(df,ticker,startDate,endDate,intervalDate):
     CompanyHist = df.history(start=startDate, end=endDate, interval=(str(intervalDate)))
     html.Div(id='output-container-date-picker-range'),
     graph_figure= lay.render_prices(CompanyHist,ticker)
+    graph_figure_lay = html.Div([
+        dmc.Text("Carga de archivo", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
+        graph_figure
+    ])
+
     
-    return graph_figure,CompanyHist
+    return graph_figure_lay,CompanyHist
 
 
 

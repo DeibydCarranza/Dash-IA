@@ -58,6 +58,7 @@ for column in col_tot_fetal:
 ## ----------  Sección a renderizar   ----------
 app.layout = html.Div(
     children=[
+        dmc.Text("Carga de archivos", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
         components.upload_component,
     ],
     style={'width': '100%', 'height': '100%'}

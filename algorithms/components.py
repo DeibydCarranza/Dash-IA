@@ -316,6 +316,8 @@ def plotTree(Clasificacion, columns_values, Y_Clasificacion):
 def tab_for_methods():
 
     layout = html.Div([
+            dmc.Text("Aplicación de los modelos", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
+
             dcc.Tabs(id="tabs_methods", value='tab_method_algor',children=[
                 dcc.Tab(label='Clasificación por árbol de decisión', value='tab-1', children=[
                     

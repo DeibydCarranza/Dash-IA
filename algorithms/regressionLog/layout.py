@@ -95,18 +95,25 @@ def section_graphs_interactive(exactitud,report,Matriz_Clasificacion,TypeG,X_val
     # Layoput principal que será devuelto
     layout = html.Div([
         # Gráfica de validación
+        dmc.Text("Gráfica de validación", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
+
         dcc.Graph(figure=graph_vali),
+        dmc.Text("Matriz de clasificación", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
 
         # Tabla
         table,
+        dmc.Text("Reporte de resultados", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
 
         # Exactitud
-        html.H3(f'Exactitud: {exactitud}'),
+        dmc.Text(f"Exactitud: {exactitud}", weight=700,style={"fontSize": 15,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
 
         # Grid con las secciones classification_report_div y dcc.Graph(figure=roc_curve_fig)
-        html.H3('Reporte de Clasificación:'),
+        dmc.Text("Reporte de Clasificación:", weight=700,style={"fontSize": 15,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
 
         Grid_layout,
+
+        dmc.Text("Nuevos pronósticos", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
+
         prediction_lay
     ])
 

@@ -180,6 +180,7 @@ def section_graphs_interactive(report,Y_Prono, Y_test,Pronostico,columns_values,
 
     # Layoput principal que será devuelto
     layout = html.Div([
+        dmc.Text("Modelo del método", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
         acordeon,
         html.Div(id="cmp-rendimientos-rocs"),
     ])

@@ -87,8 +87,8 @@ def show_rules(df, input_val_1, input_val_2, input_val_3):
 def block_params():
     texto1="Soporte"
     texto2="Confianza"
-    texto3="Presentación"
-    section_mod1 = mod_params_slide_input(0, 50, "-1",texto1)
+    texto3="Elevación %"
+    section_mod1 = mod_params_slide_input(0, 40, "-1",texto1)
     section_mod2 = mod_params_slide_input(0, 80, "-2",texto2)
     section_mod3 = mod_params_slide_input(0, 6, "-3",texto3)
 
@@ -118,7 +118,7 @@ def mod_params_slide_input(mini, maxi, suffix="",texto=""):
                 max=maxi,
                 #step=stepSlider,
                 marks={i: str(i) for i in range(maxi + 1)},
-                value=(maxi / 3)
+                value=(maxi // 3)
             ),
             dcc.Input(
                 id=input_id,
