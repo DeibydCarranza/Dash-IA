@@ -53,8 +53,7 @@ app.layout= html.Div(
                     dmc.StepperStep(
                         label="Clustering",
                         description="Aplicando algoritmo",
-                        children=[layouts.select_algorithm,
-                                layouts.p_to_minkowski]
+                        children=[layouts.clustering]
                     ),
                     dmc.StepperCompleted(
                         children=dmc.Text(
@@ -118,62 +117,35 @@ def update_output(list_of_contents, list_of_names):
         return {'display': 'block'}, [render],{'display': 'block'},data_array
 # Estandarizar
 @app.callback(
-    [Output('select-metricas', 'style'),
-     Output('container-button-timestamp','children')],
+     Output('container-button-timestamp','children'),
     [Input('btn-nclicks-nor', 'n_clicks'),
      Input('btn-nclicks-esc', 'n_clicks'),
-     Input('btn-nclicks-view', 'n_clicks')]
+     Input('btn-nclicks-view', 'n_clicks'),
+     Input('store_select','data')]
 )
-def update_output(btn1_clicks, btn2_clicks, btn3_clicks):
+def update_output(btn1_clicks, btn2_clicks, btn3_clicks,step):
     ctx = dash.callback_context
     global estandarizar
     global df_feature
-    if not ctx.triggered:
-        return {'display': 'none'},''
+    if step == 2: # limitamos su ejecución a solo el step 2 (3)
+        if not ctx.triggered:
+            return {'display': 'none'},''
 
-    button_id = ctx.triggered[0]['prop_id'].split('.')[0]
-
-    if button_id == 'btn-nclicks-nor':
-        estandarizar = mt.normalizar(df_feature)
-    elif button_id == 'btn-nclicks-esc':
-        estandarizar = mt.escalar(df_feature)
-    elif button_id == 'btn-nclicks-view':
-        estandarizar = tl.convert_to_dataframe(estandarizar) # numpy to dataframe        
-        return {'display': 'block'},tl.render_results(estandarizar)
-    return {'display': 'none'},''
-# Metricas
-@app.callback([Output('input-to-minkowski', 'style'),
-               Output('selected-value-metricas', "children"),
-               Output('output-valor', 'style')], 
-               Input("framework-select-metricas", "value"))
-def select_value(type):
-    global estandarizar
-    if type == 'minkowski':
-        return  {'display': 'block'}, '', {'display': 'block'}
-    elif type != None and type != 'minkowski':
-        matriz = mt.matriz_distancia(type,None,estandarizar)
-        matriz = tl.render_results(matriz)
-        return {'display': 'none'}, matriz,{'display': 'none'}
-    else:
-         return {'display': 'none'}, '',{'display': 'none'}
-# Selecting lambda
-@app.callback(
-    Output('output-valor', 'children'),
-    [Input('button-leer-valor', 'n_clicks')],
-    [State('lambda', 'value')]
-)
-def leer_valor(n_clicks, valor_lambda):
-    global estandarizar
-    if n_clicks is not None:
-        if valor_lambda and valor_lambda != '0':
-            matriz = mt.matriz_distancia('Minkowski',float(valor_lambda),estandarizar)
-            matriz = tl.render_results(matriz)
-            return matriz
-        elif valor_lambda and valor_lambda =='0':
-            return 'Lambda no puede ser 0'
+        button_id = ctx.triggered[0]['prop_id'].split('.')[0]
+        print('*************************************')
+        print('*************************************')
+        print('*************************************')
+        print(button_id)
+        print('STEP  --->' + str(step))
+        if button_id == 'btn-nclicks-nor':
+            estandarizar = mt.normalizar(df_feature)
+        elif button_id == 'btn-nclicks-esc':
+            estandarizar = mt.escalar(df_feature)
+        elif button_id == 'btn-nclicks-view':
+            estandarizar = tl.convert_to_dataframe(estandarizar) # numpy to dataframe        
+            return tl.render_results(estandarizar)
         else:
-            return 'El campo de entrada está vacío'
-    return ''
+            raise PreventUpdate
 # Upload tag
 @app.callback(
     [Output("output_delete_tag", "children"),
@@ -236,3 +208,111 @@ def print_text(n_clicks,value):
     else:
         print('else')
         raise PreventUpdate
+# Logic
+@app.callback(
+    [Output('output_tabs_logic_Clu', 'children'),
+     Output('store_logic','data')],
+    [Input('tap_logic_clustering', 'value')]
+)
+def render_content(type_Algorith):
+    global df_without_tag
+    if type_Algorith == "j":
+        return [layouts.buttons_j],type_Algorith
+    elif type_Algorith == "p":
+        return None
+    else: 
+        raise PreventUpdate
+# Buttons J to graph
+@app.callback(
+    [Output('output_b_j', 'children'),
+     Output('select_clustering','data'),
+     Output('div_panorama','style')],
+    [Input('send_info_graphJ', 'n_clicks'), #clicks
+     Input('store_select', 'data'), #step
+     Input('store_logic', 'data'),  #type algorithm
+     Input('store_metric', 'data'), # matric
+     Input('store_minkowski', 'data')], # lambda
+     State('numClusters', 'value')
+)
+def update_output(n_clicks,step,type_Algorith,metric,l,numClusters):
+    global estandarizar,df
+    ctx = dash.callback_context
+    if step == 3 and type_Algorith == 'j':
+        if not ctx.triggered:
+            raise PreventUpdate
+        button_id = ctx.triggered[0]['prop_id']
+        if button_id == "send_info_graphJ.n_clicks":
+            if len(numClusters) > 0:
+                # print table with clusters
+                df,table = mt.creat_cluster_tags(df,estandarizar,numClusters,metric)
+                # asignar distinct(clusterH)
+                data_array = tl.select_items_df(tl.extract_values_columns(df,'clusterH'))
+                print(data_array)
+                return table,data_array,{'display': 'block'}
+            else:
+                return 'Llena los campos',None,{'display': 'none'}
+
+#Metricas
+@app.callback([Output('input-to-minkowski', 'style'),
+               Output('output-valor', 'style'),
+               Output('store_metric', 'data')], 
+               Input("framework-select-metricas", "value"))
+def select_value(type):
+    global estandarizar
+    if type == 'minkowski':
+        return  {'display': 'block'},{'display': 'block'},type
+    elif type != None and type != 'minkowski':
+        return {'display': 'none'},{'display': 'none'},type
+    else:
+         return {'display': 'none'},{'display': 'none'},None
+#Selecting lambda
+@app.callback(
+    [Output('output-valor', 'children'),
+     Output('store_minkowski', 'data')],
+    Input('lambda', 'value')
+)
+def leer_valor(valor_lambda):
+    global estandarizar
+    if  valor_lambda != '0':
+        # matriz = mt.matriz_distancia('Minkowski',float(valor_lambda),estandarizar)
+        # matriz = tl.render_results(matriz)
+        return 'Valor valido',valor_lambda
+    elif valor_lambda =='0':
+        return 'Debe ser mayor a 0', None
+    else:
+        return 'El campo de entrada está vacío',None
+
+# Display tables to specific cluster
+@app.callback(
+    Output("output_select_clustering", "children"),
+    Input("select_clustering", "value")
+)
+def display_cluster(value):
+    global df
+    if value == '':
+        raise PreventUpdate  # No hay cambio de valor, no se ejecuta el callback
+    else:
+        df_where = tl.where_cluster_is(df,int(value))
+        table_where = tl.render_results(df_where)
+        return table_where
+    
+@app.callback(
+    Output("output_panorama_general", "children"),
+    [Input("info_general", "n_clicks"),
+     Input('store_metric','data')]
+)
+def display_general_cluster(nclicks,metric):
+    global df
+    ctx = dash.callback_context
+    if metric is not None or len(metric)>0:
+        if not ctx.triggered:
+            raise PreventUpdate
+        button_id = ctx.triggered[0]['prop_id']
+        if button_id == "info_general.n_clicks":
+            df_resumem = mt.panorama_general_cluster(df)
+            table_resume = tl.render_results(df_resumem)
+            return table_resume
+        else:
+            raise PreventUpdate
+    else:
+        return 'Primero aplica la closterización'

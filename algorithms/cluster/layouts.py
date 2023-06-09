@@ -10,8 +10,11 @@ standarizar = html.Div(id='button-container-est',children=[
 
 select_algorithm = html.Div(id='select-metricas',children=
     [
+        dcc.Store(id="store_metric"),
         dmc.Select(
             id="framework-select-metricas",
+            label = "Selecciona una metrica",
+            value = "euclidean",
             data=[
                 {"value": "euclidean", "label": "Euclidiana"},
                 {"value": "chebyshev", "label": "Chebyshev"},
@@ -19,14 +22,13 @@ select_algorithm = html.Div(id='select-metricas',children=
                 {"value": "minkowski", "label": "Minkowski"},
             ],
             style={"width": 200, "marginBottom": 10},
-        ),
-        html.Div(id="selected-value-metricas")
+        )
     ]
 )
 
 p_to_minkowski = dmc.Group(id = 'input-to-minkowski', children = [
+    dcc.Store(id="store_minkowski"),
     dmc.TextInput(id='lambda',placeholder="Lambda", style={"width": 200}, disabled=False),
-    dmc.Button("ok", id='button-leer-valor',variant="gradient"),
     html.Div(id='output-valor')
     ]
 )
@@ -109,7 +111,8 @@ MultiSelect_to_featuring = html.Div( id = 'SuperDiv_MultiSelect',children =
     ]
 )
 
-clustering = html.Div([
+clustering = html.Div(id = 'super_div_clustering',children=[
+    dcc.Store(id="store_logic"),
     dmc.Tabs(
         [
             dmc.TabsList(
@@ -138,3 +141,45 @@ clustering = html.Div([
         }
     )
 ])
+
+select_cluster = html.Div( id='num_cluster', children =
+    [
+        dmc.Select(
+            label="Selecciona un cluster",
+            id="select_clustering",
+            value="",
+            data=[],
+            style={"width": 200, "marginBottom": 10},
+        ), 
+        html.Div(id = 'output_select_clustering')
+    ]
+)
+
+button_general = dmc.Center(id='div_panorama',children=[
+    dmc.Button("Información General",id="info_general",size='md',radius='xl'),
+    html.Div(id = 'output_panorama_general')
+])
+
+buttons_j = dmc.Stack(children=
+[
+    dmc.Center(children=
+    [
+        dmc.SimpleGrid(cols=2,children = 
+        [
+            dmc.TextInput(
+                    id = 'numClusters',
+                    label = '¿Número de clusters?',
+                    required = True,
+                    placeholder="7",
+                    size='md',radius='xl'
+            ),
+            select_algorithm,
+            p_to_minkowski,
+            dmc.Button("ok",id="send_info_graphJ",size='md',radius='xl')
+        ])
+    ]),
+    html.Div(id='output_b_j'),
+    select_cluster,
+    button_general
+],align="center",justify="center",spacing='sm')
+

@@ -124,3 +124,9 @@ def matrix_redimensionada(df_standarAndNoTag,Array_attributs):
     MatrizHipoteca = np.array(df_standarAndNoTag[Array_attributs])
     df = pd.DataFrame(MatrizHipoteca)
     return df
+def extract_values_columns(df, column):
+    unique_values = sorted(df[column].unique())
+    return unique_values
+def where_cluster_is(df,number):
+    df_where = df[df.clusterH == number]
+    return df_where
