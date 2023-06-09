@@ -57,3 +57,15 @@ def convert_to_dataframe(data):
     else:
         raise ValueError("El parámetro de entrada no es un DataFrame ni un arreglo de NumPy.")
 
+def extract_titles_columns(df):
+    column_names = df.columns.tolist()
+    print(column_names)
+    return column_names
+    
+def select_items_df(array_items):
+    items_select = [{"value": item, "label": item} for item in array_items]
+    return items_select
+
+def drop_tag(df_original,columnas_a_excluir):
+    df_nuevo = df_original.loc[:, ~df_original.columns.isin(columnas_a_excluir)]
+    return df_nuevo

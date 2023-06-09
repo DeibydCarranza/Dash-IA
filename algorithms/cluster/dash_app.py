@@ -132,11 +132,7 @@ def update_output(btn1_clicks, btn2_clicks, btn3_clicks,step):
             return {'display': 'none'},''
 
         button_id = ctx.triggered[0]['prop_id'].split('.')[0]
-        print('*************************************')
-        print('*************************************')
-        print('*************************************')
         print(button_id)
-        print('STEP  --->' + str(step))
         if button_id == 'btn-nclicks-nor':
             estandarizar = mt.normalizar(df_feature)
         elif button_id == 'btn-nclicks-esc':
