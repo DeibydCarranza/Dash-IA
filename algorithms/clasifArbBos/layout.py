@@ -7,31 +7,6 @@ from dash import dcc, html,dash_table
 
 import dash_bootstrap_components as dbc
 
-""" Vista en 2 pestañas de los métodos presentes """
-def tab_for_methods():
-
-    layout = html.Div([
-            dcc.Tabs(id="tabs_methods", value='tab_method_algor',children=[
-                dcc.Tab(label='Clasificación por árbol de decisión', value='tab-1', children=[
-                    
-                    # Llama a los inputs propios del árbol (0-> indice, False->Tipo árbol)
-                    comp.params_tree_fores(0,False),
-                    dmc.Button('Generar carga de inputs', id='generate-button-tree', n_clicks=0,variant="gradient"),
-                    html.Div(id='input-values-container-tree')
-
-                ]),
-                dcc.Tab(label='Clasificación por bosque aleatorio', value='tab-2',children=[
-                    # Llama a los inputs propios del árbol (1-> indice, False->Tipo árbol)
-                    comp.params_tree_fores(1,True),
-                    dmc.Button('Generar carga de inputs', id='generate-button-forest', n_clicks=0,variant="gradient"),
-                    html.Div(id='input-values-container-forest')
-
-                ]),
-            ],style={'margin-bottom':'60px','margin-top':'30px'}
-            )
-       ])
-    return layout
-
 
 """ Sección donde se renderizan las tablas, gráficas y componentes propios del algoritmo ->method.py"""
 def section_graphs_interactive(exactitud,report,Matriz_Clasificacion,Y_Clasi,X_val,Y_val,Clasificacion,columns_values, isForest):
@@ -85,9 +60,12 @@ def section_graphs_interactive(exactitud,report,Matriz_Clasificacion,Y_Clasi,X_v
 
     # Layoput principal que será devuelto
     layout = html.Div([
+        dmc.Text("Resultados del entrenamiento", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
+
         acordeon,
         html.Div(id="cmp-rendimientos-rocs"),
-
+            
+        dmc.Text("Aplicación a nuevas clasificaciones", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
         prediction_lay
     ])
 
@@ -224,7 +202,7 @@ def accordion_diagnostic(columns_values,):
                         obj_description[0]["label"], obj_description[0]["image"], obj_description[0]["description"]
                     ),
                     create_accordion_content(
-                            pronostico(columns_values)
+                            card_diasgnostic(columns_values)
                     ),   
                 ],
                 value=obj_description[0]["id"],
@@ -234,28 +212,72 @@ def accordion_diagnostic(columns_values,):
 
     return accordion
 
-def pronostico(columns_values):
-    layout = html.Div(children=[])
-    input_elements = []
+""" Card donde se realiza la clasificación """
+def card_diasgnostic(columns_values):
+    layout_input = html.Div(children=[])
+    layout_values = html.Div(children=[],style={"display":"None"})
 
+    input_elements = []
+    div_values = []
     for column in columns_values:
         input_element = dcc.Input(
             type="number",
             placeholder="Ingrese un valor",
             id="input-prono-{}".format(column),
-            required=True,
-            min="0"
+            min="0",
+            step=0.0001
         )
         input_elements.append(html.Div([
             html.Label(column),
             input_element
         ]))
-    layout.children = input_elements
+    layout_input.children = input_elements
 
-    submit_button = html.Button("Enviar", id="submit-button", n_clicks=0)
-    layout.children.append(submit_button)
-    layout.children.append(html.Div(id="output-container-prono"))
+    for column in columns_values:
+        element = html.Div(id='output-container-prono-{}'.format(column))
+        div_values.append(html.Div([
+            element
+        ]))
+    layout_values.children = div_values
 
-    # ------------Sección donde se muestran los resultados
-
-    return layout
+    card = dmc.Card(
+        children=[
+            dmc.CardSection(
+                dmc.Image(
+                    src="https://www.axiomafv.com/wp-content/uploads/2016/12/toma-de-decisiones-700x394.jpg",
+                    height=160,
+                )
+            ),
+            dmc.Group(
+                [
+                    dmc.Text("Predicción de clasificación", weight=500),
+                    dmc.Badge("Sugerencia", color="red", variant="light"),
+                ],
+                position="apart",
+                mt="md",
+                mb="xs",
+            ),
+            html.Div([
+                html.Div([
+                    layout_input,
+                    html.Div(id="output-container-prono"),
+                    layout_values
+                ]),
+                dmc.Text(id='resultado-output',size="sm",color="dimmed")
+            ]),
+            dmc.Button(
+                "Realizar pronóstico",
+                variant="light",
+                color="blue",
+                fullWidth=True,
+                mt="md",
+                radius="md",
+                id='pronosticar-button'
+            ),
+        ],
+        withBorder=True,
+        shadow="sm",
+        radius="md",
+        style={"width": 420},
+    )
+    return card

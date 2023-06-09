@@ -47,7 +47,10 @@ def render_results(df):
     # Create Layout
     res = html.Div(
         children=[
+            dmc.Text("Tabla de elementos", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px'}),
             table,
+
+            dmc.Text("Selección de caracaterísticas", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
 
             html.Div("Ingresa al menos 2 características a evaluar"),
             html.Div([

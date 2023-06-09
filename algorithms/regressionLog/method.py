@@ -76,4 +76,10 @@ def modelValidation(columns_values,app):
     return layout
 
 
-
+def pronosticar(valores,columnas):
+    if len(valores) == len(columnas):
+        PacienteID1 = pd.DataFrame([valores], columns=columnas)
+        resultado = ClasificacionRL.predict(PacienteID1)
+        return resultado
+    else:
+        return None

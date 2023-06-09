@@ -142,7 +142,7 @@ def mod_params_train(index):
                 dcc.Input(
                     id=f"input_size_train_{index}",
                     type="number",
-                    placeholder="Size train",
+                    placeholder="Size train %",
                     min=1,
                     max=100,
                     step=0.1,
@@ -151,7 +151,7 @@ def mod_params_train(index):
                 )
             ], width=4),
             dbc.Col([
-                html.Label("Datos random"),
+                html.Label("Semilla random"),
                 dcc.Input(
                     id=f"input_random_state_{index}",
                     type="number",
@@ -311,3 +311,30 @@ def plotTree(Clasificacion, columns_values, Y_Clasificacion):
     # Codificar la imagen en base64
     image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
     return image_base64    
+
+""" Vista en 2 pestañas de los métodos presentes AD/BA"""
+def tab_for_methods():
+
+    layout = html.Div([
+            dmc.Text("Aplicación de los modelos", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
+
+            dcc.Tabs(id="tabs_methods", value='tab_method_algor',children=[
+                dcc.Tab(label='Clasificación por árbol de decisión', value='tab-1', children=[
+                    
+                    # Llama a los inputs propios del árbol (0-> indice, False->Tipo árbol)
+                    params_tree_fores(0,False),
+                    dmc.Button('Generar carga de inputs', id='generate-button-tree', n_clicks=0,variant="gradient"),
+                    html.Div(id='input-values-container-tree')
+
+                ]),
+                dcc.Tab(label='Clasificación por bosque aleatorio', value='tab-2',children=[
+                    # Llama a los inputs propios del árbol (1-> indice, False->Tipo árbol)
+                    params_tree_fores(1,True),
+                    dmc.Button('Generar carga de inputs', id='generate-button-forest', n_clicks=0,variant="gradient"),
+                    html.Div(id='input-values-container-forest')
+
+                ]),
+            ],style={'margin-bottom':'60px','margin-top':'30px'}
+            )
+       ])
+    return layout

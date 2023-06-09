@@ -41,3 +41,15 @@
     font-size: 3rem;
     margin-top: 2rem;
   }
+  .header-top {
+    background-color: #f1f1f1;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .home-icon {
+    font-size: 20px;
+    margin-right: 10px;
+  }

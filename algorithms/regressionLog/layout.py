@@ -95,18 +95,25 @@ def section_graphs_interactive(exactitud,report,Matriz_Clasificacion,TypeG,X_val
     # Layoput principal que será devuelto
     layout = html.Div([
         # Gráfica de validación
+        dmc.Text("Gráfica de validación", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
+
         dcc.Graph(figure=graph_vali),
+        dmc.Text("Matriz de clasificación", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
 
         # Tabla
         table,
+        dmc.Text("Reporte de resultados", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
 
         # Exactitud
-        html.H3(f'Exactitud: {exactitud}'),
+        dmc.Text(f"Exactitud: {exactitud}", weight=700,style={"fontSize": 15,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
 
         # Grid con las secciones classification_report_div y dcc.Graph(figure=roc_curve_fig)
-        html.H3('Reporte de Clasificación:'),
+        dmc.Text("Reporte de Clasificación:", weight=700,style={"fontSize": 15,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
 
         Grid_layout,
+
+        dmc.Text("Nuevos pronósticos", weight=700,style={"fontSize": 25,'text-align': 'center', 'margin-bottom': '30px', 'margin-top': '50px'}),
+
         prediction_lay
     ])
 
@@ -151,7 +158,7 @@ def accordion_diagnostic(columns_values,app):
                         obj_description[0]["label"], obj_description[0]["image"], obj_description[0]["description"]
                     ),
                     create_accordion_content(
-                            pronostico(columns_values,app)
+                            card_diasgnostic(columns_values)
                     ),   
                 ],
                 value=obj_description[0]["id"],
@@ -161,85 +168,34 @@ def accordion_diagnostic(columns_values,app):
 
     return accordion
 
+""" Card donde se realiza la clasificación """
+def card_diasgnostic(columns_values):
+    layout_input = html.Div(children=[])
+    layout_values = html.Div(children=[],style={"display":"None"})
 
-
-
-# def pronostico(columns_values,app):
-#     layout = html.Div(children=[])
-
-#     grid_children = []
-#     for column in columns_values:
-#         input_element = html.Div([dcc.Input(type="number", placeholder="Ingrese un valor", 
-#                                   id=column, required=True, min="0"),
-#                             html.Label(column)
-#         ])
-
-#     grid_children.append(dmc.Col(html.Div(input_element, style={"textAlign": "center"}), span=4))
-
-#     grid_layout = dmc.Grid(children=grid_children,grow=True, gutter="xl")
-#     layout.children.append(grid_layout)
-
-#     return layout
-
-
-# def pronostico(columns_values, app):
-#     layout = html.Div(children=[])
-#     input_elements = []
-
-#     for column in columns_values:
-#         input_element = dcc.Input(
-#             type="number",
-#             placeholder="Ingrese un valor",
-#             id="input-prono-{}".format(column),
-#             required=True,
-#             min="0"
-#         )
-#         input_elements.append(html.Div([
-#             html.Label(column),
-#             input_element
-#         ]))
-
-#     # # Agregar el botón de envío al formulario
-#     # submit_button = html.Button("Enviar", id="submit-button-prono")
-#     # input_elements.append(submit_button)
-
-#     # # Agregar los elementos de entrada y el botón al layout
-#     layout.children = input_elements
-
-#     # # Agregar el elemento de salida para mostrar el resultado
-#     # output_div = html.Div(id="output-div")
-#     # layout.children.append(output_div)
-
-#     return layout
-
-def pronostico(columns_values, app):
-    layout = html.Div(children=[])
     input_elements = []
-
+    div_values = []
     for column in columns_values:
         input_element = dcc.Input(
             type="number",
             placeholder="Ingrese un valor",
             id="input-prono-{}".format(column),
-            required=True,
-            min="0"
+            min="0",
+            step=0.0001
         )
         input_elements.append(html.Div([
             html.Label(column),
             input_element
         ]))
-    layout.children = input_elements
+    layout_input.children = input_elements
 
-    submit_button = html.Button("Enviar", id="submit-button", n_clicks=0)
-    layout.children.append(submit_button)
-    layout.children.append(html.Div(id="output-container-prono"))
+    for column in columns_values:
+        element = html.Div(id='output-container-prono-{}'.format(column))
+        div_values.append(html.Div([
+            element
+        ]))
+    layout_values.children = div_values
 
-    layout.children.append(html.Div(children=[
-            card_diasgnostic(0,1233)
-    ]))
-    return layout
-
-def card_diasgnostic(grupo,score):
     card = dmc.Card(
         children=[
             dmc.CardSection(
@@ -250,31 +206,34 @@ def card_diasgnostic(grupo,score):
             ),
             dmc.Group(
                 [
-                    dmc.Text("Resultados del pronóstico", weight=500),
+                    dmc.Text("Predicción de clasificación", weight=500),
                     dmc.Badge("Sugerencia", color="red", variant="light"),
                 ],
                 position="apart",
                 mt="md",
                 mb="xs",
             ),
-            dmc.Text(
-                "Con base a los datos introducidos, se pantlea la posibilidad de pertenecer al grupo "
-                +str(grupo)+" con una exactitud del algoritmo del "+str(score),
-                size="sm",
-                color="dimmed",
-            ),
+            html.Div([
+                html.Div([
+                    layout_input,
+                    html.Div(id="output-container-prono"),
+                    layout_values
+                ]),
+                dmc.Text(id='resultado-output',size="sm",color="dimmed")
+            ]),
             dmc.Button(
-                "Descargar pronóstico",
+                "Realizar pronóstico",
                 variant="light",
                 color="blue",
                 fullWidth=True,
                 mt="md",
                 radius="md",
+                id='pronosticar-button'
             ),
         ],
         withBorder=True,
         shadow="sm",
         radius="md",
-        style={"width": 400},
+        style={"width": 420},
     )
     return card
